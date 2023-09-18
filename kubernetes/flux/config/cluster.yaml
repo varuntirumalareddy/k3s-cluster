@@ -6,11 +6,9 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30m
-  url: ssh://git@github.com/varuntirumala1/k8s-cluster
   ref:
     branch: main
-  secretRef:
-    name: github-deploy-key
+  url: "https://github.com/varuntirumala1/k8s-cluster.git"
   ignore: |
     # exclude all
     /*
