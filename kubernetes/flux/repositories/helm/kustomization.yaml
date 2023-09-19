@@ -27,3 +27,5 @@ resources:
   - ./windmill.yaml
   - ./rook-ceph.yaml
   - ./piraeus.yaml
+  - ./node-feature-discovery.yaml
+  - ./descheduler.yaml
