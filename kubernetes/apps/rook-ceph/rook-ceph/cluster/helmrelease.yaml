@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -7,54 +6,91 @@ metadata:
   namespace: rook-ceph
 spec:
   interval: 30m
-  timeout: 15m
   chart:
     spec:
       chart: rook-ceph-cluster
-      version: v1.12.4
       sourceRef:
         kind: HelmRepository
         name: rook-ceph
         namespace: flux-system
-  maxHistory: 2
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
   values:
+    toolbox:
+      enabled: false
+
     monitoring:
       enabled: true
       createPrometheusRules: true
+
     ingress:
       dashboard:
         ingressClassName: internal
         host:
-          name: &host rook.${SECRET_DOMAIN}"
+          name: &host rook.achva.network
           path: /
         tls:
           - hosts:
               - *host
-    toolbox:
-      enabled: true
+
     configOverride: |
       [global]
       bdev_enable_discard = true
       bdev_async_discard = true
+
     cephClusterSpec:
       network:
         provider: host
 
+      resources:
+        mgr:
+          requests:
+            cpu: "125m"
+            memory: "549M"
+          limits:
+            memory: "1219M"
+        mon:
+          requests:
+            cpu: "49m"
+            memory: "477M"
+          limits:
+            memory: "1059M"
+        osd:
+          requests:
+            cpu: "442m"
+            memory: "2678M"
+          limits:
+            memory: "5944M"
+        mgr-sidecar:
+          requests:
+            cpu: "49m"
+            memory: "94M"
+          limits:
+            memory: "208M"
+        crashcollector:
+          requests:
+            cpu: "15m"
+            memory: "64M"
+          limits:
+            memory: "64M"
+        logcollector:
+          requests:
+            cpu: "100m"
+            memory: "100M"
+          limits:
+            memory: "1G"
+        cleanup:
+          requests:
+            cpu: "250m"
+            memory: "100M"
+          limits:
+            memory: "1G"
+
       crashCollector:
         disable: false
+
       dashboard:
         enabled: true
         urlPrefix: /
-        ssl: false
+
       storage:
         useAllNodes: true
         useAllDevices: true
@@ -63,7 +99,7 @@ spec:
           
     cephBlockPoolsVolumeSnapshotClass:
       enabled: false
-      
+
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -86,6 +122,7 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
+            
     cephFileSystems:
       - name: ceph-filesystem
         spec:
@@ -96,23 +133,22 @@ spec:
             - failureDomain: host
               replicated:
                 size: 4
-              name: data0
           metadataServer:
             activeCount: 1
             activeStandby: true
             resources:
               requests:
-                cpu: 1000m
-                memory: 4Gi
+                cpu: "35m"
+                memory: "64M"
               limits:
-                memory: 4Gi
+                memory: "144M"
         storageClass:
           enabled: true
           isDefault: false
           name: ceph-filesystem
-          pool: data0
           reclaimPolicy: Delete
           allowVolumeExpansion: true
+          mountOptions: []
           parameters:
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
             csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
@@ -121,28 +157,29 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
+
     cephObjectStores:
       - name: ceph-objectstore
         spec:
           metadataPool:
             failureDomain: host
             replicated:
-              size: 4
+              size: 
           dataPool:
             failureDomain: host
             erasureCoded:
-              dataChunks: 4
-              codingChunks: 2
+              dataChunks: 2
+              codingChunks: 1
           preservePoolsOnDelete: true
           gateway:
             port: 80
             resources:
               requests:
-                cpu: 1000m
-                memory: 1Gi
+                cpu: 100m
+                memory: 128M
               limits:
                 memory: 2Gi
-            instances: 2
+            instances: 1
           healthCheck:
             bucket:
               interval: 60s
