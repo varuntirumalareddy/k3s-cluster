@@ -23,7 +23,6 @@ spec:
       csiAddons:
         enabled: true
 
-      kubeletDirPath: /var/lib/kubelet
       enableCSIHostNetwork: true
       pluginTolerations:
         - effect: "NoExecute"
