@@ -12,3 +12,8 @@ kubernetes:
         home-k8s-controlplane-3:
           ansible_user: a99940218
           ansible_host: 192.168.120.43
+    worker:
+      hosts:
+        home-k8s-gpu-worker-1:
+          ansible_user: a99940218
+          ansible_host: 192.168.120.51

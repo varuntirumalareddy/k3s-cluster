@@ -18,3 +18,10 @@ resources:
   - ./prometheus-community.yaml
   - ./stakater.yaml
   - ./weave-gitops.yaml
+  - ./kyverno.yaml
+  - ./one-password.yaml
+  - ./awx.yaml
+  - ./nvidia.yaml
+  - ./tf-controller.yaml
+  - ./vector.yaml
+  - ./windmill.yaml
