@@ -26,3 +26,4 @@ resources:
   - ./vector.yaml
   - ./windmill.yaml
   - ./rook-ceph.yaml
+  - ./piraeus.yaml
