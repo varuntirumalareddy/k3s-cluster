@@ -30,3 +30,4 @@ resources:
   - ./node-feature-discovery.yaml
   - ./descheduler.yaml
   - ./democratic-csi.yaml
+  - ./backube.yaml
