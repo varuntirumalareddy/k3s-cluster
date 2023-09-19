@@ -30,7 +30,11 @@ spec:
     csi:
       csiAddons:
         enabled: true
+    crds:
+      enabled: true
       # Set when encryption/compression is enabled
       #cephFSKernelMountOptions: ms_mode=secure
     monitoring:
       enabled: true
+    
+    pspEnable: false
