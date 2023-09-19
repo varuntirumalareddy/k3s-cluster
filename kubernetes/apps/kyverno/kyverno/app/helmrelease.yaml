@@ -1,46 +1,59 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: kyverno
-  namespace: kyverno
 spec:
-  interval: 30m
+  interval: 15m
   chart:
     spec:
       chart: kyverno
       version: 3.0.5
       sourceRef:
         kind: HelmRepository
-        name: kyverno
+        name: kyverno-charts
         namespace: flux-system
-  maxHistory: 2
+      interval: 15m
   install:
+    createNamespace: true
     remediation:
-      retries: 3
+      retries: 5
   upgrade:
-    cleanupOnFail: true
     remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+      retries: 5
   values:
     crds:
       install: true
-    grafana:
-      enabled: true
-      annotations:
-        grafana_folder: System
-    backgroundController:
+    config:
+      excludeKyvernoNamespace: false
+    admissionController:
+      replicas: 3
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: kyverno
+      container:
+        resources:
+          limits:
+            memory: 582Mi
       serviceMonitor:
         enabled: true
+    backgroundController:
       rbac:
         clusterRole:
           extraResources:
             - apiGroups:
                 - ""
               resources:
+                - namespaces
                 - pods
               verbs:
                 - create
@@ -49,32 +62,3 @@ spec:
                 - delete
                 - get
                 - list
-    cleanupController:
-      serviceMonitor:
-        enabled: true
-    reportsController:
-      serviceMonitor:
-        enabled: true
-    admissionController:
-      replicas: 3
-      serviceMonitor:
-        enabled: true
-      rbac:
-        clusterRole:
-          extraResources:
-            - apiGroups:
-                - ""
-              resources:
-                - pods
-              verbs:
-                - create
-                - update
-                - delete
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/instance: kyverno
-              app.kubernetes.io/component: kyverno
