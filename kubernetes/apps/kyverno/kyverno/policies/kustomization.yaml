@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./remove-cpu-limits.yaml
 #  - ./inject-timezone.yaml
+  - ./add-psa-labels.yaml
