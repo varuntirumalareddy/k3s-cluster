@@ -29,3 +29,4 @@ resources:
   - ./piraeus.yaml
   - ./node-feature-discovery.yaml
   - ./descheduler.yaml
+  - ./democratic-csi.yaml

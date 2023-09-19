@@ -8,7 +8,7 @@ spec:
   path: "./clusters/home-k8s/apps/tools/democratic-csi/local-path"
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: home-kubernetes
   interval: 10m
   prune: true
   dependsOn:
