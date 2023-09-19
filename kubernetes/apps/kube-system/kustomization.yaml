@@ -8,3 +8,7 @@ resources:
   - ./local-path-provisioner/ks.yaml
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
+  - ./snapshot-controller/ks.yaml
+  - ./descheduler/ks.yaml
+  - ./node-feature-discovery/ks.yaml
+  
