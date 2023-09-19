@@ -25,3 +25,4 @@ resources:
   - ./tf-controller.yaml
   - ./vector.yaml
   - ./windmill.yaml
+  - ./rook-ceph.yaml
