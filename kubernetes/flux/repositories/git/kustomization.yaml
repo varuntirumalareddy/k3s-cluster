@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./local-path-provisioner.yaml
   - ./kubernetes-csi-addons.yaml
+  - ./system-upgrade-controller.yaml
