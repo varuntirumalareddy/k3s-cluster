@@ -135,10 +135,10 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: local-path
+              storageClassName: local-hostpath
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 20Gi
     grafana:
       enabled: false
       forceDeployDashboards: true
