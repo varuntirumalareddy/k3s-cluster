@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: connect
-  namespace: security
+  namespace: one-password
 spec:
   interval: 5m
   chart:
@@ -43,7 +43,7 @@ spec:
         serviceMonitor:
           # Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
           #
-          enabled: false
+          enabled: true
           # Specify the interval at which metrics should be scraped
           #
           interval: 30s
