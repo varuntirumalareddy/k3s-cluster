@@ -5,10 +5,13 @@ metadata:
   name: home-kubernetes
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 10m
+  # 6a: Change this to your user and repo names
+  url: ssh://git@github.com/varuntirumala1/k8s-cluster
   ref:
     branch: main
-  url: "https://github.com/varuntirumala1/k8s-cluster.git"
+  secretRef:
+    name: github-deploy-key
   ignore: |
     # exclude all
     /*
