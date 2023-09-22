@@ -31,3 +31,4 @@ resources:
   - ./descheduler.yaml
   - ./democratic-csi.yaml
   - ./backube.yaml
+  - ./cloudnative-pg.yaml
