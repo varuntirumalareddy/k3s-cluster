@@ -19,6 +19,7 @@ spec:
       namespace: system-upgrade
   timeout: 2m
   images:
+  # renovate: datasource=github-releases depName=rancher/system-upgrade-controller
   - name: rancher/system-upgrade-controller
     newName: docker.io/rancher/system-upgrade-controller
     newTag: v0.13.1
