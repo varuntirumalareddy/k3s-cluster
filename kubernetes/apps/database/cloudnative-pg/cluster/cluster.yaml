@@ -19,9 +19,10 @@ spec:
     storageClass: ceph-block
   superuserSecret:
     name: cloudnative-pg-secret
-  bootstrap:
-    recovery:
-      source: &previousCluster postgres-v3
+# use only if you have cluster already backed up in cloudflare R2; leave commented to bootstrap an empty cluster     
+#  bootstrap:
+#    recovery:
+#      source: &previousCluster postgres-v3
   postgresql:
     parameters:
       max_connections: "600"
