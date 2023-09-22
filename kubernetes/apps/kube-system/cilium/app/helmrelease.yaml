@@ -26,10 +26,22 @@ spec:
     keepHistory: false
   values:
     autoDirectNodeRoutes: true
+    bandwidthManager:
+      enabled: true
+      bbr: true
     bpf:
       masquerade: true
+      tproxy: true
+
+    l7Proxy: true
+
     bgp:
       enabled: false
+      announce:
+        loadbalancerIP: true
+        podCIDR: false
+    bgpControlPlane:
+      enabled: true
     cluster:
       name: home-cluster
       id: 1
@@ -82,11 +94,12 @@ spec:
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
-      enabled: true
-      # https://github.com/cilium/cilium/issues/26586
-      leaseDuration: 120s
-      leaseRenewDeadline: 60s
-      leaseRetryPeriod: 1s
+      enabled: false
+    #  enabled: true
+    #  # https://github.com/cilium/cilium/issues/26586
+    #  leaseDuration: 120s
+    #  leaseRenewDeadline: 60s
+    #  leaseRetryPeriod: 1s
     loadBalancer:
       algorithm: maglev
       mode: dsr
