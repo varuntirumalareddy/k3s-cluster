@@ -22,7 +22,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: op-connect
+              name: onepassword-connect
               port:
                 name: connect-api
   tls:
