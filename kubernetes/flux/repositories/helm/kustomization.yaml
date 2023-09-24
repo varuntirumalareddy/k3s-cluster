@@ -32,3 +32,4 @@ resources:
   - ./democratic-csi.yaml
   - ./backube.yaml
   - ./cloudnative-pg.yaml
+  - ./external-secrets.yaml

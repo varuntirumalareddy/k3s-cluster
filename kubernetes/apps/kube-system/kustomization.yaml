@@ -12,4 +12,5 @@ resources:
   - ./descheduler/ks.yaml
   - ./node-feature-discovery/ks.yaml
   - ./democratic-csi/ks.yaml
+  - ./external-secrets/ks.yaml
   
