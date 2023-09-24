@@ -125,22 +125,4 @@ spec:
     # This section of values is for 1Password Operator Configuration
     operator:
       # Denotes whether the 1Password Operator will be deployed
-      create: true
-    
-      # Denotes whether the 1Password Operator will automatically restart deployments based on associated updated secrets.
-      autoRestart: true
-    
-      # The name of 1Password Operator Application
-      applicationName: onepassword-connect-operator
-    
-      # The 1Password Operator image pull policy
-      imagePullPolicy: IfNotPresent
-    
-      # The 1Password Operator repository
-      imageRepository: 1password/onepassword-operator
-    
-      # How often the 1Password Operator will poll for secrets updates.
-      pollingInterval: 600
-    
-      # The 1Password Operator version to pull
-      #version: "1.8.0"
+      create: false
