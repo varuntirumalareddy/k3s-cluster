@@ -1,0 +1,128 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: connect
+  namespace: one-password
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: connect
+      sourceRef:
+        kind: HelmRepository
+        name: onepassword
+        namespace: flux-system
+      interval: 5m
+  valuesFrom:
+    - kind: Secret
+      name: 1password-credentials
+      valuesKey: 1password-credentials
+      targetPath: connect.credentials
+    - kind: Secret
+      name: 1password-credentials
+      valuesKey: token
+      targetPath: operator.token.value
+  values:
+    connect:
+      create: true
+      annotations:
+        secret.reloader.stakater.com/reload: "op-credentials"
+      replicas: 1
+      api:
+        name: connect-api
+        # The 1Password Connect API repository
+        imageRepository: 1password/connect-api
+        resources: {}
+        httpPort: 8080
+        httpsPort: 8443
+        logLevel: info
+        # Prometheus Service Monitor
+        # ref: https://github.com/coreos/prometheus-operator
+        #
+        serviceMonitor:
+          # Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
+          #
+          enabled: true
+          # Specify the interval at which metrics should be scraped
+          #
+          interval: 30s
+          # Define the path used by ServiceMonitor to scrape metrics
+          #
+          path: "/metrics"
+          # Define the HTTP URL parameters used by ServiceMonitor
+          #
+          params: {}
+          # Extra annotations for the ServiceMonitor
+          #
+          annotations: {}
+    
+      # The 1Password Connect Sync Specific Values
+      sync:
+        name: connect-sync
+        imageRepository: 1password/connect-sync
+        resources: {}
+        httpPort: 8081
+        logLevel: info
+    
+      # The name of 1Password Connect Application
+      applicationName: onepassword-connect
+    
+      # The name of 1Password Connect Host
+      host: onepassword-connect
+    
+      # The type of Service resource to create for the Connect API and sync services.
+      # See: https://kubernetes.io/docs/concepts/services-networking/service
+      # This by default is NodePort and can also be defined as LoadBalancer.
+      # If serviceType is LoadBalancer then loadBalancerSourceRanges and loadBalancerIP should be defined.
+      # See: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+      serviceType: ClusterIP
+    
+      # Additional annotations to be added to the service resource
+      serviceAnnotations: {}
+    
+      # loadBalancerSourceRanges:
+      #   - 10.0.0.0/16
+      #   - 1.84.26.4/32
+      imagePullPolicy: IfNotPresent
+
+      ingress:
+        enabled: false
+#        labels:
+#           traffic: external
+#        annotations: {}
+#        ingressClassName: "internal-nginx"
+#    
+#        # As of Kubernetes 1.19, all Ingress Paths must have a pathType configured. The default value below should be sufficient in most cases.
+#        # See: https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types for other possible values.
+#        pathType: Prefix
+#        hosts:
+#          - host: onepassword-connect.home.${SECRET_DOMAIN}
+#            paths: []
+#        # Extra paths to prepend to the host configuration.
+#        # This is useful when working with annotation based services.
+#        extraPaths: []
+#        # - path: /*
+#        #   backend:
+#        #     service:
+#        #       name: ssl-redirect
+#        #       port:
+#        #         number: use-annotation
+#        tls:
+#          - secretName: one-password-connect-tls
+#            hosts:
+#              - onepassword-connect.home.${SECRET_DOMAIN}
+    
+      # Optionally the internal profiler can be enabled to debug memory or performance issues.
+      # For normal operation of Connect this does not have to enabled.
+      profiler:
+        enabled: false
+        # The interval at which profiler snapshots are taken.
+        interval: 6h
+        # Number of profiler snapshots to keep.
+        keepLast: 12
+    
+    # This section of values is for 1Password Operator Configuration
+    operator:
+      # Denotes whether the 1Password Operator will be deployed
+      create: false

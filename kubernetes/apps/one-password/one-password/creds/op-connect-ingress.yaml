@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: connect-ingress
+  annotations:
+    # Use cert-manager ClusterIssuer
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    # Allow cert-manager to edit this Ingress resource in-place
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    # Issue temporary self-signed cert
+    cert-manager.io/issue-temporary-certificate: "true"
+spec:
+  # You may need to specify the IngressClass if your cluster does not have a
+  # default IngressClass, e.g. for Ingress NGINX Controller, uncomment the
+  # below line:
+  ingressClassName: internal
+  rules:
+    - host: &host connect.${SECRET_DOMAIN}
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: onepassword-connect
+              port:
+                name: connect-api
+  tls:
+    - hosts:
+      - *host
+      secretName: connect-cert
