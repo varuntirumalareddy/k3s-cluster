@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: awx.home.achva.network
+    - host: &host awx.home.achva.network
       http:
         paths:
           - path: /
@@ -20,5 +20,4 @@ spec:
                 port:
                   number: 80
   tls:
-      hosts:
-        - awx.home.achva.network
+      hosts: *host
