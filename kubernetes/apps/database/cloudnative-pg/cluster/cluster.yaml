@@ -18,11 +18,7 @@ spec:
     size: 50Gi
     storageClass: ceph-block
   superuserSecret:
-    name: cloudnative-pg-secret
-# use only if you have cluster already backed up in cloudflare R2; leave commented to bootstrap an empty cluster     
-  bootstrap:
-    recovery:
-      source: &previousCluster postgres-v3
+    name: cloudnative-pg-secret     
   postgresql:
     parameters:
       max_connections: "600"
@@ -45,19 +41,23 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: aws-secret-access-key
+# use only if you have cluster already backed up in cloudflare R2; leave commented to bootstrap an empty cluster
+#  bootstrap:
+#    recovery:
+#      source: &previousCluster postgres-v3
   # Note: externalClusters is needed when recovering from an existing cnpg cluster; uncomment below when restoring along with the bootstrap section not needed for new cluster
-  externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        wal:
-          compression: bzip2
-          maxParallel: 8
-        destinationPath: s3://cnpg-pwu1kph/
-        endpointURL: https://${SECRET_CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
-        s3Credentials:
-          accessKeyId:
-            name: cloudnative-pg-secret
-            key: aws-access-key-id
-          secretAccessKey:
-            name: cloudnative-pg-secret
-            key: aws-secret-access-key
+#  externalClusters:
+#    - name: *previousCluster
+#      barmanObjectStore:
+#        wal:
+#          compression: bzip2
+#          maxParallel: 8
+#        destinationPath: s3://cnpg-pwu1kph/
+#        endpointURL: https://${SECRET_CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
+#        s3Credentials:
+#          accessKeyId:
+#            name: cloudnative-pg-secret
+#            key: aws-access-key-id
+#          secretAccessKey:
+#            name: cloudnative-pg-secret
+#            key: aws-secret-access-key
