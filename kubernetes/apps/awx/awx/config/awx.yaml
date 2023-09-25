@@ -9,9 +9,14 @@ spec:
   task_privileged: true
   web_replicas: 2
   task_replicas: 2
-#  ingress_tls_secret: awx_tls_secret
-#  ingress_type: ingress
-#  hostname: awx.home.achva.network
+  ingress_type: ingress
+  ingress_class_name: internal
+  hostname: awx.achva.network
+  ingress_annotations: |
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/issue-temporary-certificate: "true"
+  ingress_tls_secret: awx-tls-custom-secret
   secret_key_secret: custom-awx-secret-key
   postgres_configuration_secret: awx-external-db-secret
 
