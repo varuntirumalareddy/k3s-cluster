@@ -5,3 +5,5 @@ namespace: awx
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./externalsecret2.yaml
+  - ./externalsecret3.yaml
