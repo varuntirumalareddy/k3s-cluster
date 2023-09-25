@@ -1,0 +1,25 @@
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx
+
+spec:
+  auto_upgrade: true
+  task_privileged: true
+  web_replicas: 2
+  task_replicas: 2
+#  ingress_tls_secret: awx_tls_secret
+#  ingress_type: ingress
+#  hostname: awx.home.achva.network
+  secret_key_secret: custom-awx-secret-key
+  postgres_configuration_secret: awx-external-db-secret
+
+  #postgres_storage_class: awx-postgres-volume
+  #postgres_storage_requirements:
+  #  requests:
+  #    storage: 8Gi
+
+  projects_persistence: true
+  projects_storage_class: ceph-block
+  projects_storage_size: 20Gi
