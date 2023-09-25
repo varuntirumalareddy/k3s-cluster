@@ -16,9 +16,10 @@ spec:
     cert-manager.io/cluster-issuer: letsencrypt-production
     acme.cert-manager.io/http01-edit-in-place: "true"
     cert-manager.io/issue-temporary-certificate: "true"
+
   ingress_tls_secret: awx-tls-custom-secret
   secret_key_secret: custom-awx-secret-key
-  postgres_configuration_secret: awx-external-db-secret
+  postgres_configuration_secret: awx-db
 
   #postgres_storage_class: awx-postgres-volume
   #postgres_storage_requirements:
