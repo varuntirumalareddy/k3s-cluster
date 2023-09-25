@@ -71,50 +71,16 @@ spec:
       # The name of 1Password Connect Host
       host: onepassword-connect
     
-      # The type of Service resource to create for the Connect API and sync services.
-      # See: https://kubernetes.io/docs/concepts/services-networking/service
-      # This by default is NodePort and can also be defined as LoadBalancer.
-      # If serviceType is LoadBalancer then loadBalancerSourceRanges and loadBalancerIP should be defined.
-      # See: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
       serviceType: ClusterIP
     
       # Additional annotations to be added to the service resource
       serviceAnnotations: {}
     
-      # loadBalancerSourceRanges:
-      #   - 10.0.0.0/16
-      #   - 1.84.26.4/32
       imagePullPolicy: IfNotPresent
 
       ingress:
         enabled: false
-#        labels:
-#           traffic: external
-#        annotations: {}
-#        ingressClassName: "internal-nginx"
-#    
-#        # As of Kubernetes 1.19, all Ingress Paths must have a pathType configured. The default value below should be sufficient in most cases.
-#        # See: https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types for other possible values.
-#        pathType: Prefix
-#        hosts:
-#          - host: onepassword-connect.home.${SECRET_DOMAIN}
-#            paths: []
-#        # Extra paths to prepend to the host configuration.
-#        # This is useful when working with annotation based services.
-#        extraPaths: []
-#        # - path: /*
-#        #   backend:
-#        #     service:
-#        #       name: ssl-redirect
-#        #       port:
-#        #         number: use-annotation
-#        tls:
-#          - secretName: one-password-connect-tls
-#            hosts:
-#              - onepassword-connect.home.${SECRET_DOMAIN}
-    
-      # Optionally the internal profiler can be enabled to debug memory or performance issues.
-      # For normal operation of Connect this does not have to enabled.
+
       profiler:
         enabled: false
         # The interval at which profiler snapshots are taken.

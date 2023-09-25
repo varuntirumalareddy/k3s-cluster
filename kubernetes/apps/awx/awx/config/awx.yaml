@@ -16,8 +16,9 @@ spec:
     cert-manager.io/cluster-issuer: letsencrypt-production
     acme.cert-manager.io/http01-edit-in-place: "true"
     cert-manager.io/issue-temporary-certificate: "true"
+    hajimari.io/enable: true
     hajimari.io/appName: AWX
-    hajimari.io/icon: simple-icons:awx
+    hajimari.io/icon: simple-icons:ansible
 
   ingress_tls_secret: awx-tls-custom-secret
   secret_key_secret: custom-awx-secret-key
