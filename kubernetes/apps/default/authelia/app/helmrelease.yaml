@@ -111,7 +111,7 @@ spec:
             path: /api/health
             port: *port
           initialDelaySeconds: 10
-          periodSeconds: 30
+          periodSeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
       readiness: *probes
