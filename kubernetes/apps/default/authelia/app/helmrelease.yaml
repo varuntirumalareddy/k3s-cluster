@@ -110,13 +110,12 @@ spec:
           httpGet:
             path: /api/health
             port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
       readiness: *probes
-      startup:
-        enabled: false
+      startup: *probes
     ingress:
       main:
         enabled: true
