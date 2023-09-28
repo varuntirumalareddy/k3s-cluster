@@ -102,48 +102,20 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-#    probes:
-#      liveness: &probes
-#        enabled: true
-#        custom: true
-#        spec:
-#          httpGet:
-#            path: /api/health
-#            port: *port
-#          initialDelaySeconds: 10
-#          periodSeconds: 120
-#          timeoutSeconds: 5
-#          failureThreshold: 6
-#      readiness: *probes
-#      startup: *probes
-
     probes:
-      method:
-        httpGet:
-          path: /api/health
-          port: http
-          scheme: HTTP
-  
-      liveness:
-        initialDelaySeconds: 0
-        periodSeconds: 30
-        timeoutSeconds: 5
-        successThreshold: 1
-        failureThreshold: 5
-  
-      readiness:
-        initialDelaySeconds: 0
-        periodSeconds: 5
-        timeoutSeconds: 5
-        successThreshold: 1
-        failureThreshold: 5
-  
-      startup:
-        initialDelaySeconds: 10
-        periodSeconds: 5
-        timeoutSeconds: 5
-        successThreshold: 1
-        failureThreshold: 6
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/health
+            port: *port
+          initialDelaySeconds: 10
+          periodSeconds: 120
+          timeoutSeconds: 5
+          failureThreshold: 6
+      readiness: *probes
+      startup: *probes
         
     ingress:
       main:
