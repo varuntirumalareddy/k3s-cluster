@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: lldap-gatus-ep
-  namespace: default
+  name: loki-gatus-ep
+  namespace: monitoring
   labels:
     gatus.io/enabled: "true"
 data:
   config.yaml: |
     endpoints:
-      - name: lldap
+      - name: loki
         group: guarded
         url: 1.1.1.1
         interval: 1m
@@ -17,7 +17,7 @@ data:
           hide-hostname: true
           hide-url: true
         dns:
-          query-name: lldap.${SECRET_DOMAIN}
+          query-name: loki.${SECRET_DOMAIN}
           query-type: A
         conditions:
           - "len([BODY]) == 0"
