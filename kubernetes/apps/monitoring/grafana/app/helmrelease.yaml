@@ -342,7 +342,7 @@ spec:
         - hosts:
             - *host
     persistence:
-      enabled: false
+      enabled: true
       storageClassName: local-hostpath
       size: 10Gi
     testFramework:
