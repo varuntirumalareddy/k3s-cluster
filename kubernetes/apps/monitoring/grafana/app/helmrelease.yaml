@@ -342,7 +342,9 @@ spec:
         - hosts:
             - *host
     persistence:
-      enabled: false
+      enabled: true
+      storageClass: local-hostpath
+      size: 10Gi
     testFramework:
       enabled: false
     topologySpreadConstraints:
