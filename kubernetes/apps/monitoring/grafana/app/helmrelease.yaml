@@ -342,9 +342,9 @@ spec:
         - hosts:
             - *host
     persistence:
-      enabled: true
-      storageClassName: local-hostpath
-      size: 10Gi
+      enabled: false
+#      storageClassName: ceph-block
+#      size: 10Gi
     testFramework:
       enabled: false
     topologySpreadConstraints:
