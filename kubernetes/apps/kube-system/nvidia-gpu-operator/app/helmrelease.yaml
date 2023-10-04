@@ -30,6 +30,8 @@ spec:
       enabled: true
     driver:
       enabled: true
+      image: driver
+      version: "535.104.12-ubuntu22.04"
     toolkit:
       enabled: true
       env:
