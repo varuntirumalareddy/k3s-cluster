@@ -5,12 +5,10 @@ resources:
   - ./namespace.yaml
   - ./cilium/ks.yaml
   - ./coredns/ks.yaml
-#  - ./local-path-provisioner/ks.yaml
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./descheduler/ks.yaml
-  - ./node-feature-discovery/ks.yaml
   - ./democratic-csi/ks.yaml
   - ./external-secrets/ks.yaml
 
