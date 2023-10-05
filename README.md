@@ -1,4 +1,4 @@
-# Deploy a Kubernetes cluster backed by Flux
+# Kubernetes cluster backed by Flux
 
 Welcome to my gitops repo for a single Kubernetes ([k3s](https://k3s.io)) cluster with [Ansible](https://www.ansible.com) and using [Flux](https://toolkit.fluxcd.io) to manage its state.
 
