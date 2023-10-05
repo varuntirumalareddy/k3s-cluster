@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
-namespace: one-password
 metadata:
   name: connect-ingress
+  namespace: one-password
   annotations:
     # Use cert-manager ClusterIssuer
     cert-manager.io/cluster-issuer: letsencrypt-production
