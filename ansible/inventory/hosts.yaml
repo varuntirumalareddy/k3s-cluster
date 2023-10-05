@@ -12,6 +12,12 @@ kubernetes:
         home-k3s-controlplane-3:
           ansible_user: a99940218
           ansible_host: 192.168.120.43
+        home-k3s-controlplane-4:
+          ansible_user: a99940218
+          ansible_host: 192.168.120.44
+        home-k3s-controlplane-5:
+          ansible_user: a99940218
+          ansible_host: 192.168.120.45
     worker:
       hosts:
         home-k3s-gpu-worker-1:
