@@ -5,4 +5,4 @@ namespace: kube-system
 resources:
 #  - ./cilium-l2.yaml
   - ./helmrelease.yaml
-  - ./bgppeeringpolicy.yaml
+#  - ./bgppeeringpolicy.yaml
