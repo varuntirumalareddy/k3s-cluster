@@ -33,7 +33,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://cnpg-pwu1kph/
       endpointURL: https://${SECRET_CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
-      serverName: &currentCluster postgres-v5
+      serverName: &currentCluster postgres-v6
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -44,7 +44,7 @@ spec:
 # use only if you have cluster already backed up in cloudflare R2; leave commented to bootstrap an empty cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres-v4
+      source: &previousCluster postgres-v5
  # Note: externalClusters is needed when recovering from an existing cnpg cluster; uncomment below when restoring along with the bootstrap section not needed for new cluster
   externalClusters:
     - name: *previousCluster
