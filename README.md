@@ -22,7 +22,7 @@ Before we get started everything below must be taken into consideration, you mus
 
 - [ ] bring a **positive attitude** and be ready to learn and fail a lot. _The more you fail, the more you can learn from._
 - [ ] run the cluster on bare metal machines or VMs within your home network &mdash; **this is NOT designed for cloud environments**.
-- [ ] have Debian 12 freshly installed on 1 or more AMD64/ARM64 bare metal machines or VMs. Each machine will be either a **control node** or a **worker node** in your cluster.
+- [ ] have Ubuntu Server 22.04 freshly installed on 1 or more AMD64/ARM64 bare metal machines or VMs. Each machine will be either a **control node** or a **worker node** in your cluster.
 - [ ] give your nodes unrestricted internet access &mdash; **air-gapped environments won't work**.
 - [ ] have a domain you can manage on Cloudflare.
 - [ ] be willing to commit encrypted secrets to a public GitHub repository.
@@ -44,15 +44,15 @@ Before we get started everything below must be taken into consideration, you mus
 | Worker  | 4 _(6*)_ | 8GB _(24GB*)_ | 100GB _(500GB*)_ SSD/NVMe |
 | _\* recommended_ |
 
-### Debian for AMD64
+### Ubuntu for AMD64
 
-1. Download the latest stable release of Debian from [here](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd), then follow [this guide](https://www.linuxtechi.com/how-to-install-debian-12-step-by-step) to get it installed. Deviations from the guide:
+1. Download the latest stable release of Ubuntu from [here](https://ubuntu.com/download/server then follow [this guide](https://www.linuxtechi.com/how-to-install-debian-12-step-by-step) to get it installed. Deviations from the guide:
 
     ```txt
     Choose "Guided - use entire disk"
     Choose "All files in one partition"
     Delete Swap partition
-    Uncheck all Debian desktop environment options
+    Uncheck all Ubuntu desktop environment options
     ```
 
 2. [Post install] Remove CD/DVD as apt source
@@ -90,7 +90,7 @@ Before we get started everything below must be taken into consideration, you mus
 
 ## 🚀 Getting Started
 
-Once you have installed Debian on your nodes, there are 6 stages to getting a Flux-managed cluster up and runnning.
+Once you have installed Ubuntu on your nodes, there are 6 stages to getting a Flux-managed cluster up and runnning.
 
 ### 🎉 Stage 1: Create a Git repository
 
