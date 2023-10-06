@@ -3,9 +3,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: vpn-gateway
-  labels:
-    # Avoid variable substitution of shell variables bellow
-    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   interval: 5m
   chart:
@@ -45,19 +42,17 @@ spec:
           image:
             repository: docker.io/qmcgaw/gluetun
             tag: latest
-
         env:
-        - name:  VPN_INTERFACE
+        - name: VPN_INTERFACE
           value: wg0
         - name: VPN_ENDPOINT_PORT
           value: "2049"
         - name: SHADOWSOCKS
           value: "on"
-        - name:  FIREWALL
+        - name: FIREWALL
           value: "off"
-        - name:  DOT
+        - name: DOT
           value: "off"
-
         envFrom:
           - secretRef:
               name: vpn-gateway
