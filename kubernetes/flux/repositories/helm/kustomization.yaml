@@ -32,3 +32,4 @@ resources:
   - ./backube.yaml
   - ./cloudnative-pg.yaml
   - ./external-secrets.yaml
+  - ./angelnu-helm-charts.yaml
