@@ -45,3 +45,12 @@ spec:
         - fields:
             - type: 8
               family: IPv4
+
+  ingress:
+    - toCIDR:
+        - 0.0.0.0/0
+    - icmps:
+        - fields:
+            - type: 8
+              family: IPv4
+
