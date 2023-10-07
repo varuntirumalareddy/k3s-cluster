@@ -53,9 +53,31 @@ spec:
           value: "off"
         - name: DOT
           value: "off"
-        envFrom:
-          - secretRef:
-              name: vpn-gateway
+        - name: SERVER_CITIES
+          valueFrom:
+            secretKeyRef:
+              name: vpn-gateway-vpnconfig
+              key: SERVER_CITIES
+        - name: WIREGUARD_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: vpn-gateway-vpnconfig
+              key: WIREGUARD_PRIVATE_KEY
+        - name: WIREGUARD_ADDRESSES
+          valueFrom:
+            secretKeyRef:
+              name: vpn-gateway-vpnconfig
+              key: WIREGUARD_ADDRESSES
+        - name: VPN_SERVICE_PROVIDER
+          valueFrom:
+            secretKeyRef:
+              name: vpn-gateway-vpnconfig
+              key: VPN_SERVICE_PROVIDER
+        - name: VPN_TYPE
+          valueFrom:
+            secretKeyRef:
+              name: vpn-gateway-vpnconfig
+              key: VPN_TYPE
         securityContext:
           capabilities:
             add:
