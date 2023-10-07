@@ -9,7 +9,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-external-secrets-stores
-  path: ./kubernetes/apps/default/prowlarr/app
+  path: ./kubernetes/apps/downloads/prowlarr/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -26,7 +26,7 @@ metadata:
   name: cluster-apps-prowlarr-tools
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/default/prowlarr/tools
+  path: ./kubernetes/apps/downloads/prowlarr/tools
   prune: true
   sourceRef:
     kind: GitRepository
