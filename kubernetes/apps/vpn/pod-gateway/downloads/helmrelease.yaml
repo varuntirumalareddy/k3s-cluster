@@ -18,6 +18,7 @@ spec:
         name: angelnu-helm-charts
         namespace: flux-system
   #See https://github.com/angelnu/helm-charts/blob/main/charts/apps/pod-gatewa/values.yaml
+
   values:
     image:
       repository: ghcr.io/angelnu/pod-gateway
@@ -29,6 +30,20 @@ spec:
         # Use dev version
         pullPolicy: Always
         tag: latest
+
+    service:
+      vpn:
+        enabled: true
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.40.12"
+        externalTrafficPolicy: Cluster
+        ports:
+          shadowsocks:
+            enabled: true
+            port: 8388
+
+    DNS: 172.16.1.1
 
     addons:
       vpn:
@@ -43,6 +58,8 @@ spec:
           value: wg0
         - name: SHADOWSOCKS
           value: "on"
+        - name: VPN_ENDPOINT_PORT
+          value: "51820"
         - name: FIREWALL
           value: "off"
         - name: DOT
@@ -76,8 +93,8 @@ spec:
           privileged: true
         networkPolicy:
           enabled: false
-
-    DNSPolicy: ClusterFirst
+        netshoot:
+          enabled: true
 
     podAnnotations:
       configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
@@ -88,7 +105,7 @@ spec:
 
     settings:
       # -- Traffic to these IPs will be send through the K8S gateway
-      VPN_TRAFFIC_PORT: "2049"
+      VPN_TRAFFIC_PORT: "51820"
       VXLAN_ID: 43
       VXLAN_IP_NETWORK: 172.16.1
       VPN_LOCAL_CIDRS: "10.42.0.0/16 10.43.0.0/16 172.16.0.0/12 192.168.0.0/16"
