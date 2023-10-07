@@ -105,6 +105,9 @@ spec:
     settings:
       # -- Traffic to these IPs will be send through the K8S gateway
       VPN_TRAFFIC_PORT: "51820"
+      VPN_BLOCK_OTHER_TRAFFIC: true
+      VPN_INTERFACE: wg0
+      VPN_INTERFACE_MTU: "1400"
       VXLAN_ID: 43
       VXLAN_IP_NETWORK: 172.16.1
       VPN_LOCAL_CIDRS: "10.42.0.0/16 10.43.0.0/16 172.16.0.0/12 192.168.0.0/16"
