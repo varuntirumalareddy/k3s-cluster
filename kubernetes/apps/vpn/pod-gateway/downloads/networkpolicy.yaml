@@ -22,3 +22,26 @@ spec:
               protocol: UDP
     - toEntities:
         - cluster
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vpn-gateway-pod-gateway-icmp
+  namespace: vpn
+  labels:
+    app.kubernetes.io/instance: vpn-gateway
+    app.kubernetes.io/name: pod-gateway
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: vpn-gateway
+      app.kubernetes.io/name: pod-gateway
+
+  egress:
+    - toCIDR:
+        - 0.0.0.0/0
+    - icmps:
+        - fields:
+            - type: 8
+              family: IPv4
