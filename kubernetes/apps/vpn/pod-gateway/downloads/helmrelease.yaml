@@ -25,12 +25,15 @@ spec:
       # I am using dev version for testing - others should be using latest
       tag: latest
     webhook:
+      gatewayAnnotation: setGateway
+      gatewayDefault: false
+      gatewayLabel: setGateway
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
         # Use dev version
         pullPolicy: Always
         tag: latest
-
+    DNS: 172.16.1.1
     service:
       vpn:
         enabled: true
@@ -42,8 +45,8 @@ spec:
           shadowsocks:
             enabled: true
             port: 8388
-
-    DNS: 172.16.1.1
+        netshoot:
+          enabled: true
 
     addons:
       vpn:
@@ -91,8 +94,6 @@ spec:
           privileged: true
         networkPolicy:
           enabled: false
-        netshoot:
-          enabled: true
 
     podAnnotations:
       configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
