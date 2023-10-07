@@ -58,8 +58,6 @@ spec:
           value: wg0
         - name: SHADOWSOCKS
           value: "on"
-        - name: VPN_ENDPOINT_PORT
-          value: "51820"
         - name: FIREWALL
           value: "off"
         - name: DOT
