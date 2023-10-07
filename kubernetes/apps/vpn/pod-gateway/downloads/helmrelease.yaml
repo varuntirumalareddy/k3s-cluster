@@ -3,6 +3,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: vpn-gateway
+  labels:
+    # Avoid variable substitution of shell variables bellow
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   interval: 5m
   chart:
@@ -20,19 +23,12 @@ spec:
       repository: ghcr.io/angelnu/pod-gateway
       # I am using dev version for testing - others should be using latest
       tag: latest
-    DNS: 172.16.1.1
-
-    service:
-      vpn:
-        enabled: true
-        type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: "192.168.40.12"
-        externalTrafficPolicy: Cluster
-        ports:
-          shadowsocks:
-            enabled: true
-            port: 8388
+    webhook:
+      image:
+        repository: ghcr.io/angelnu/gateway-admision-controller
+        # Use dev version
+        pullPolicy: Always
+        tag: latest
 
     addons:
       vpn:
@@ -81,6 +77,13 @@ spec:
             add:
               - NET_ADMIN
 
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
+      secret.reloader.stakater.com/reload: vpn-gateway
+
+    routed_namespaces:
+      - downloads
+
         livenessProbe:
           exec:
             command:
@@ -91,27 +94,27 @@ spec:
           periodSeconds: 60
           failureThreshold: 3
 
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
-      secret.reloader.stakater.com/reload: vpn-gateway
+        networkPolicy:
+          enabled: true
 
-    routed_namespaces:
-      - downloads
+          egress:
+            - to:
+              - ipBlock:
+                  cidr: 0.0.0.0/0
+              ports:
+              # VPN traffic
+              - port: &vpn_port 1637
+                protocol: UDP
+            - to:
+              - ipBlock:
+                  cidr: 10.0.0.0/8
 
     settings:
-      NOT_ROUTED_TO_GATEWAY_CIDRS: 10.0.0.0/8 192.168.0.0/16
-      VPN_BLOCK_OTHER_TRAFFIC: true
+      # -- If using a VPN, interface name created by it
       VPN_INTERFACE: wg0
-      VPN_INTERFACE_MTU: "1400"
-      VPN_LOCAL_CIDRS: 10.0.0.0/8 192.168.0.0/16
-      VPN_TRAFFIC_PORT: "2049"
-      VXLAN_ID: 43
-      VXLAN_IP_NETWORK: 172.16.1
-
-    webhook:
-      gatewayAnnotation: setGateway
-      gatewayDefault: false
-      gatewayLabel: setGateway
-      image:
-        repository: ghcr.io/angelnu/gateway-admision-controller
-        tag: latest
+      # -- Prevent non VPN traffic to leave the gateway
+      VPN_BLOCK_OTHER_TRAFFIC: true
+      # -- If VPN_BLOCK_OTHER_TRAFFIC is true, allow VPN traffic over this port
+      VPN_TRAFFIC_PORT: *vpn_port
+      # -- Traffic to these IPs will be send through the K8S gateway
+      VPN_LOCAL_CIDRS: "10.0.0.0/8 192.168.0.0/16"
