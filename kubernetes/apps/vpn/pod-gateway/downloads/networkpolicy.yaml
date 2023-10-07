@@ -27,7 +27,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: vpn-gateway-pod-gateway-icmp
+  name: vpn-gateway-pod-gateway-egress
   namespace: vpn
   labels:
     app.kubernetes.io/instance: vpn-gateway
@@ -39,20 +39,6 @@ spec:
       app.kubernetes.io/name: pod-gateway
 
   egress:
-    - toCIDR:
-        - 0.0.0.0/0
-    - icmps:
-        - fields:
-            - type: 8
-              family: IPv4
-
-  ingress:
-    - toCIDR:
-        - 0.0.0.0/0
-    - icmps:
-        - fields:
-            - type: 8
-              family: IPv4
-            - type: 0
-              family: IPv4
+    - toEntities:
+        - world
 
