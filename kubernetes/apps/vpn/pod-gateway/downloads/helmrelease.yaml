@@ -56,27 +56,27 @@ spec:
         - name: SERVER_CITIES
           valueFrom:
             secretKeyRef:
-              name: vpn-gateway-vpnconfig
+              name: vpn-gateway
               key: SERVER_CITIES
         - name: WIREGUARD_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: vpn-gateway-vpnconfig
+              name: vpn-gateway
               key: WIREGUARD_PRIVATE_KEY
         - name: WIREGUARD_ADDRESSES
           valueFrom:
             secretKeyRef:
-              name: vpn-gateway-vpnconfig
+              name: vpn-gateway
               key: WIREGUARD_ADDRESSES
         - name: VPN_SERVICE_PROVIDER
           valueFrom:
             secretKeyRef:
-              name: vpn-gateway-vpnconfig
+              name: vpn-gateway
               key: VPN_SERVICE_PROVIDER
         - name: VPN_TYPE
           valueFrom:
             secretKeyRef:
-              name: vpn-gateway-vpnconfig
+              name: vpn-gateway
               key: VPN_TYPE
         securityContext:
           capabilities:
