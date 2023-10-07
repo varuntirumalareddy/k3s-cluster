@@ -53,4 +53,6 @@ spec:
         - fields:
             - type: 8
               family: IPv4
+            - type: 0
+              family: IPv4
 
