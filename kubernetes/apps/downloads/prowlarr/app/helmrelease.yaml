@@ -70,6 +70,10 @@ spec:
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
             env:
               - name: VPN_INTERFACE
                 value: wg0
@@ -106,10 +110,6 @@ spec:
                   secretKeyRef:
                     name: prowlarr-secret
                     key: VPN_TYPE
-            securityContext:
-                capabilities:
-                add:
-                  - NET_ADMIN
 
           dnsdist:
             image:
