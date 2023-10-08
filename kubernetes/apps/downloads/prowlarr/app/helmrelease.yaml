@@ -38,7 +38,6 @@ spec:
               - 65539
         containers:
           main:
-            nameOverride: prowlarr
             image:
               repository: ghcr.io/onedr0p/prowlarr-develop
               tag: 1.9.1.3981@sha256:880e6e6c2600b3725a6172aa547caf6d8eb883dab50637a35bcce66a04eb39c6
