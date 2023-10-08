@@ -77,11 +77,6 @@ spec:
                 value: "off"
               - name: DNS_ADDRESS
                 value: "127.0.0.2"
-              - name: SERVER_CITIES
-                valueFrom:
-                  secretKeyRef:
-                    name: prowlarr-secret
-                    key: SERVER_CITIES
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
