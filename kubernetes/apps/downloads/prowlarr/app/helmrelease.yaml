@@ -120,13 +120,13 @@ spec:
                 enabled: false
 
     service:
-      main:
+      prowlarr:
         ports:
           http:
             port: *port
 
     ingress:
-      main:
+      prowlarr:
         enabled: true
         className: "internal"
         hosts:
