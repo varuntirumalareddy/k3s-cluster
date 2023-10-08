@@ -7,9 +7,9 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./gatus.yaml
-configMapGenerator:
-  - name: prowlarr-dnsdist
-    files:
-      - ./config/dnsdist.conf
-generatorOptions:
-  disableNameSuffixHash: true
+#configMapGenerator:
+#  - name: prowlarr-dnsdist
+#    files:
+#      - ./config/dnsdist.conf
+#generatorOptions:
+#  disableNameSuffixHash: true

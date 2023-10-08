@@ -72,9 +72,7 @@ spec:
               - name: SHADOWSOCKS
                 value: "on"
               - name: DOT
-                value: "off"
-              - name: DNS_ADDRESS
-                value: "127.0.0.2"
+                value: "on"
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
@@ -106,10 +104,10 @@ spec:
                     name: prowlarr-secret
                     key: VPN_ENDPOINT_IP
 
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-18
-              tag: 1.8.1
+#          dnsdist:
+#            image:
+#              repository: docker.io/powerdns/dnsdist-18
+#              tag: 1.8.1
 
           port-forward:
             image:
@@ -147,15 +145,15 @@ spec:
       config:
         enabled: true
         type: emptyDir
-      dnsdist-config:
         type: configMap
-        name: prowlarr-dnsdist
-        advancedMounts:
-          main:
-            dnsdist:
-              - path: /etc/dnsdist/dnsdist.conf
-                subPath: dnsdist.conf
-                readOnly: true
+#      dnsdist-config:
+#        name: prowlarr-dnsdist
+#        advancedMounts:
+#          main:
+#            dnsdist:
+#              - path: /etc/dnsdist/dnsdist.conf
+#                subPath: dnsdist.conf
+#                readOnly: true
       gluetun-data:
         type: emptyDir
         advancedMounts:
