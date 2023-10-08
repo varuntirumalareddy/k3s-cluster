@@ -13,7 +13,3 @@ configMapGenerator:
       - ./config/dnsdist.conf
 generatorOptions:
   disableNameSuffixHash: true
-commonLabels:
-  app.kubernetes.io/name: prowlarr
-  app.kubernetes.io/instance: prowlarr
-  app.kubernetes.io/component: app
