@@ -74,6 +74,8 @@ spec:
               capabilities:
                 add:
                   - NET_ADMIN
+            networkPolicy:
+              enabled: false
             env:
               - name: VPN_INTERFACE
                 value: wg0
