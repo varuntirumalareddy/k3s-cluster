@@ -17,13 +17,6 @@ spec:
         name: bjw-s
         namespace: flux-system
   values:
-#    initContainers:
-#    image:
-#      repository: ghcr.io/onedr0p/postgres-init
-#      tag: 14.9
-#    envFrom: &envFrom
-#      - secretRef:
-#          name: prowlarr-secret
     controllers:
       main:
         annotations:
@@ -34,8 +27,46 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups:
               - 65539
+        initContainers:
+        image:
+          repository: ghcr.io/onedr0p/postgres-init
+          tag: 14.9
+        envFrom: &envFrom
+          - secretRef:
+              name: prowlarr-secret
         containers:
           main:
+            image:
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.9.1.3981@sha256:880e6e6c2600b3725a6172aa547caf6d8eb883dab50637a35bcce66a04eb39c6
+            env:
+              TZ: America/New_York
+              PROWLARR__INSTANCE_NAME: Prowlarr
+              PROWLARR__PORT: &port 80
+              PROWLARR__LOG_LEVEL: info
+              PROWLARR__AUTHENTICATION_METHOD: External
+              PROWLARR__THEME: dark
+            envFrom: *envFrom
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+
+          gluetun:
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest
@@ -85,48 +116,14 @@ spec:
               repository: docker.io/powerdns/dnsdist-18
               tag: 1.8.1
 
-          prowlarr:
-            image:
-              repository: ghcr.io/onedr0p/prowlarr-develop
-              tag: 1.9.1.3981@sha256:880e6e6c2600b3725a6172aa547caf6d8eb883dab50637a35bcce66a04eb39c6
-            env:
-              TZ: America/New_York
-              PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__PORT: &port 80
-              PROWLARR__LOG_LEVEL: info
-              PROWLARR__AUTHENTICATION_METHOD: External
-              PROWLARR__THEME: dark
- #           envFrom: *envFrom
-            envFrom: &envFrom
-              - secretRef:
-                  name: prowlarr-secret
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /ping
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: false
-
     service:
-      prowlarr:
+      main:
         ports:
           http:
             port: *port
 
     ingress:
-      prowlarr:
+      main:
         enabled: true
         className: "internal"
         hosts:
@@ -134,7 +131,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: prowlarr
+                  name: main
                   port: http
         tls:
           - hosts:
@@ -151,6 +148,15 @@ spec:
             dnsdist:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
+                readOnly: true
+      gluetun-data:
+        type: emptyDir
+        advancedMounts:
+          main:
+            gluetun:
+              - path: /tmp/gluetun
+            port-forward:
+              - path: /tmp/gluetun
                 readOnly: true
     resources:
       requests:
