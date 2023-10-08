@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: prowlarr
+  name: prowlarr-allow-wireguard
   namespace: downloads
   labels:
     app.kubernetes.io/instance: prowlarr
