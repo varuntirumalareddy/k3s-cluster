@@ -83,8 +83,6 @@ spec:
                 value: "off"
               - name: SHADOWSOCKS
                 value: "on"
-              - name: VPN_ENDPOINT_PORT
-                value: "51820"
               - name: DOT
                 value: "off"
               - name: DNS_ADDRESS
