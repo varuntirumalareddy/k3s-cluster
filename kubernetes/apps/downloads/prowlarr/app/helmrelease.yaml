@@ -17,6 +17,13 @@ spec:
         name: bjw-s
         namespace: flux-system
   values:
+    initContainers:
+    image:
+      repository: ghcr.io/onedr0p/postgres-init
+      tag: 14.9
+    envFrom: &envFrom
+      - secretRef:
+          name: prowlarr-secret
     controllers:
       main:
         annotations:
@@ -42,9 +49,7 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
-            envFrom: &envFrom
-              - secretRef:
-                  name: prowlarr-secret
+            envFrom: *envFrom
             probes:
               liveness: &probes
                 enabled: true
@@ -60,12 +65,6 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
-
-          initContainers:
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 14.9
-            envFrom: *envFrom
 
           dnsdist:
             image:
