@@ -32,7 +32,7 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 14.9
-                envFrom: &envFrom
+                envFrom:
                   - secretRef:
                       name: prowlarr-secret
         containers:
@@ -47,7 +47,9 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
-            envFrom: *envFrom
+            envFrom:
+                - secretRef:
+                    name: prowlarr-secret
             securityContext:
               runAsUser: 568
               runAsGroup: 568
