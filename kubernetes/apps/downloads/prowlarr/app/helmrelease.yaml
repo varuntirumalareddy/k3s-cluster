@@ -37,45 +37,6 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-develop
-              tag: 1.9.1.3981@sha256:880e6e6c2600b3725a6172aa547caf6d8eb883dab50637a35bcce66a04eb39c6
-            env:
-              TZ: America/New_York
-              PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__PORT: &port 80
-              PROWLARR__LOG_LEVEL: info
-              PROWLARR__AUTHENTICATION_METHOD: External
-              PROWLARR__THEME: dark
- #           envFrom: *envFrom
-            envFrom: &envFrom
-              - secretRef:
-                  name: prowlarr-secret
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /ping
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: false
-
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-18
-              tag: 1.8.1
-
-          gluetun:
-            image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest
             env:
@@ -118,6 +79,45 @@ spec:
                 capabilities:
                 add:
                   - NET_ADMIN
+
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-18
+              tag: 1.8.1
+
+          prowlarr:
+            image:
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.9.1.3981@sha256:880e6e6c2600b3725a6172aa547caf6d8eb883dab50637a35bcce66a04eb39c6
+            env:
+              TZ: America/New_York
+              PROWLARR__INSTANCE_NAME: Prowlarr
+              PROWLARR__PORT: &port 80
+              PROWLARR__LOG_LEVEL: info
+              PROWLARR__AUTHENTICATION_METHOD: External
+              PROWLARR__THEME: dark
+ #           envFrom: *envFrom
+            envFrom: &envFrom
+              - secretRef:
+                  name: prowlarr-secret
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
 
     service:
       main:
