@@ -62,11 +62,11 @@ spec:
                 enabled: false
 
           initContainers:
-            01-init-db:
-              image:
-                repository: ghcr.io/onedr0p/postgres-init
-                tag: 14.9
-              envFrom: *envFrom
+            nameOverride: 01-init-db
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.9
+            envFrom: *envFrom
 
           dnsdist:
             image:
