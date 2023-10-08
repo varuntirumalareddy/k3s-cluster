@@ -147,8 +147,8 @@ spec:
       config:
         enabled: true
         type: emptyDir
-        type: configMap
       dnsdist-config:
+        type: configMap
         name: prowlarr-dnsdist
         advancedMounts:
           main:
