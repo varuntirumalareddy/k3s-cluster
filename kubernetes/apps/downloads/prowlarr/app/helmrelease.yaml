@@ -10,20 +10,20 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.0.3
+      version: 2.0.2
       interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
   values:
-    initContainers:
-    image:
-      repository: ghcr.io/onedr0p/postgres-init
-      tag: 14.9
-    envFrom: &envFrom
-      - secretRef:
-          name: prowlarr-secret
+#    initContainers:
+#    image:
+#      repository: ghcr.io/onedr0p/postgres-init
+#      tag: 14.9
+#    envFrom: &envFrom
+#      - secretRef:
+#          name: prowlarr-secret
     controllers:
       main:
         annotations:
@@ -46,7 +46,10 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
-            envFrom: *envFrom
+ #           envFrom: *envFrom
+            envFrom: &envFrom
+              - secretRef:
+                  name: prowlarr-secret
             securityContext:
               runAsUser: 568
               runAsGroup: 568
