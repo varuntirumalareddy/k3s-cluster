@@ -27,6 +27,14 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups:
               - 65539
+        initContainers:
+          01-init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.9
+                envFrom: &envFrom
+                  - secretRef:
+                      name: prowlarr-secret
         containers:
           main:
             image:
@@ -39,9 +47,7 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
-            envFrom: &envFrom
-              - secretRef:
-                  name: prowlarr-secret
+            envFrom: *envFrom
             securityContext:
               runAsUser: 568
               runAsGroup: 568
@@ -117,13 +123,6 @@ spec:
                 value: "80"
               - name: PORT_FORWARDED
                 value: "/tmp/gluetun/forwarded_port"
-
-    initContainers:
-      01-init-db:
-        image:
-          repository: ghcr.io/onedr0p/postgres-init
-          tag: 14.9
-        envFrom: *envFrom
 
     service:
       main:
