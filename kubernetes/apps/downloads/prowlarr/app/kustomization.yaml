@@ -7,7 +7,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./gatus.yaml
-  - ./networkpolicy.yaml
+#  - ./networkpolicy.yaml
 configMapGenerator:
   - name: qbittorrent-dnsdist
     files:
