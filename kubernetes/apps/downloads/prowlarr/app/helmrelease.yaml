@@ -42,7 +42,9 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
-            envFrom: *envFrom
+            envFrom: &envFrom
+              - secretRef:
+                  name: prowlarr-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -63,9 +65,7 @@ spec:
             01-init-db:
               image: ghcr.io/onedr0p/postgres-init:14.8
               imagePullPolicy: IfNotPresent
-              envFrom: &envFrom
-                - secretRef:
-                    name: prowlarr-secret
+              envFrom: *envFrom
 
           dnsdist:
             image:
@@ -115,9 +115,6 @@ spec:
                   secretKeyRef:
                     name: prowlarr-secret
                     key: VPN_TYPE
-            envFrom:
-              - secretRef:
-                  name: prowlarr-secret
             securityContext:
               capabilities:
                 add:
