@@ -114,9 +114,7 @@ spec:
                     name: prowlarr-secret
                     key: VPN_TYPE
             securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
+              privileged: true
     service:
       main:
         ports:
