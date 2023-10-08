@@ -38,8 +38,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-develop
-              tag: 1.9.1.3981@sha256:880e6e6c2600b3725a6172aa547caf6d8eb883dab50637a35bcce66a04eb39c6
+              repository: ghcr.io/onedr0p/prowlarr
+              tag: rolling
             env:
               TZ: America/New_York
               PROWLARR__INSTANCE_NAME: Prowlarr
