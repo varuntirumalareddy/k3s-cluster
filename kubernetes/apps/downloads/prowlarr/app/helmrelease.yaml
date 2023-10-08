@@ -77,16 +77,13 @@ spec:
             env:
               - name: VPN_INTERFACE
                 value: wg0
-              - name: FIREWALL_INPUT_PORTS
-                value: "80"
-              - name: FIREWALL_OUTBOUND_SUBNETS
-                # Allow access to k8s subnets
-                value: "10.42.0.0/16,10.43.0.0/16"
+              - name: FIREWALL
+                value: "off"
               - name: SHADOWSOCKS
                 value: "on"
               - name: DOT
                 value: "off"
-              - name: DNS_PLAINTEXT_ADDRESS
+              - name: DNS_ADDRESS
                 value: "127.0.0.2"
               - name: SERVER_CITIES
                 valueFrom:
