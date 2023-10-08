@@ -64,8 +64,13 @@ spec:
             env:
               - name: VPN_INTERFACE
                 value: wg0
-              - name: FIREWALL
-                value: "off"
+              - name: VPN_ENDPOINT_PORT
+                value: "51820"
+              - name: FIREWALL_INPUT_PORTS
+                value: "80"
+              - name: FIREWALL_OUTBOUND_SUBNETS
+                # Allow access to k8s subnets
+                value: "10.42.0.0/12,10.43.0.0/16"
               - name: SHADOWSOCKS
                 value: "on"
               - name: DOT
@@ -82,6 +87,11 @@ spec:
                   secretKeyRef:
                     name: prowlarr-secret
                     key: WIREGUARD_PRIVATE_KEY
+              - name: WIREGUARD_PUBLIC_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: prowlarr-secret
+                    key: WIREGUARD_PUBLIC_KEY
               - name: WIREGUARD_ADDRESSES
                 valueFrom:
                   secretKeyRef:
@@ -97,6 +107,11 @@ spec:
                   secretKeyRef:
                     name: prowlarr-secret
                     key: VPN_TYPE
+              - name: VPN_ENDPOINT_IP
+                valueFrom:
+                  secretKeyRef:
+                    name: prowlarr-secret
+                    key: VPN_ENDPOINT_IP
 
           dnsdist:
             image:
