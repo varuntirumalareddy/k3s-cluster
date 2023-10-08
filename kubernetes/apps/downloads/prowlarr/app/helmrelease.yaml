@@ -47,6 +47,9 @@ spec:
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
             envFrom: *envFrom
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
             probes:
               liveness: &probes
                 enabled: true
@@ -108,10 +111,11 @@ spec:
                   secretKeyRef:
                     name: prowlarr-secret
                     key: VPN_TYPE
-          securityContext:
-            privileged: true
-          networkPolicy:
-            enabled: false
+            securityContext:
+                capabilities:
+                add:
+                  - NET_ADMIN
+
     service:
       main:
         ports:
