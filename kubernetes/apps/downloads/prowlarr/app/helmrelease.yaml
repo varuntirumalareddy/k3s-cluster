@@ -112,6 +112,8 @@ spec:
                     key: VPN_TYPE
             securityContext:
               privileged: true
+            networkPolicy:
+              enabled: false
     service:
       main:
         ports:
