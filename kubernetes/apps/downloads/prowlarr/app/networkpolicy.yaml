@@ -8,6 +8,11 @@ metadata:
     app.kubernetes.io/instance: prowlarr
     app.kubernetes.io/name: prowlarr
 spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: prowlarr
+      app.kubernetes.io/name: prowlarr
+
   egress:
     - toCIDR:
         - 0.0.0.0/0
