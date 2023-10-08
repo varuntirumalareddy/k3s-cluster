@@ -108,10 +108,10 @@ spec:
                   secretKeyRef:
                     name: prowlarr-secret
                     key: VPN_TYPE
-            securityContext:
-              privileged: true
-            networkPolicy:
-              enabled: false
+          securityContext:
+            privileged: true
+          networkPolicy:
+            enabled: false
     service:
       main:
         ports:
