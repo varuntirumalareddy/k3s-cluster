@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: prowlarr
     app.kubernetes.io/name: prowlarr
-
+spec:
   egress:
     - toCIDR:
         - 0.0.0.0/0
