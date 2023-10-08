@@ -134,7 +134,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  name: prowlarr
                   port: http
         tls:
           - hosts:
