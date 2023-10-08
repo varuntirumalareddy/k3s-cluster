@@ -71,8 +71,8 @@ spec:
                 value: "10.42.0.0/16,10.43.0.0/16"
               - name: SHADOWSOCKS
                 value: "on"
-#              - name: DOT
-#                value: "on"
+              - name: DOT
+                value: "on"
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
@@ -145,7 +145,7 @@ spec:
       config:
         enabled: true
         type: emptyDir
-        type: configMap
+#        type: configMap
 #      dnsdist-config:
 #        name: prowlarr-dnsdist
 #        advancedMounts:
