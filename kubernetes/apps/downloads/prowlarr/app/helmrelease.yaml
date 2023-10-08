@@ -119,7 +119,7 @@ spec:
                 value: "/tmp/gluetun/forwarded_port"
 
     initContainers:
-      init-db-01:
+      01-init-db:
         image:
           repository: ghcr.io/onedr0p/postgres-init
           tag: 14.9
