@@ -20,5 +20,13 @@ spec:
         - ports:
             - port: "51820"
               protocol: UDP
+            - port: "443"
+              protocol: TCP
+            - port: "443"
+              protocol: UDP
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: UDP
     - toEntities:
         - cluster
