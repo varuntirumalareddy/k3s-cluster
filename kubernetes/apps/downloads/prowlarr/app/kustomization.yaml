@@ -11,5 +11,8 @@ configMapGenerator:
   - name: prowlarr-dnsdist
     files:
       - ./config/dnsdist.conf
+  - name: prowlarr-resolv
+    files:
+      - ./config/resolv.conf
 generatorOptions:
   disableNameSuffixHash: true

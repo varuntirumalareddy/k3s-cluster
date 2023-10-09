@@ -164,6 +164,15 @@ spec:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
+      prowlarr-resolv-config:
+        type: configMap
+        name: prowlarr-resolv
+        advancedMounts:
+          main:
+            dnsdist:
+              - path: /etc/resolv.conf
+                subPath: resolv.conf
+                readOnly: true
       gluetun-data:
         type: emptyDir
         advancedMounts:
