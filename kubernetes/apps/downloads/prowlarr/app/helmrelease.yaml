@@ -23,9 +23,10 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
+            fsGroup: 100
+            supplementalGroups:
+              - 34
+              - 100
             fsGroupChangePolicy: "OnRootMismatch"
         initContainers:
           01-init-db:
@@ -40,6 +41,7 @@ spec:
             image:
               repository: ghcr.io/onedr0p/prowlarr-nightly
               tag: 1.9.3.4013
+              pullPolicy: IfNotPresent
             env:
               TZ: America/New_York
               PROWLARR__INSTANCE_NAME: Prowlarr
@@ -48,6 +50,9 @@ spec:
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
             envFrom: *envFrom
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 100
 
           gluetun:
             image:
