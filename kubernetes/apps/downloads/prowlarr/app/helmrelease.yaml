@@ -27,6 +27,10 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups:
               - 65539
+        dnsPolicy: "None"
+        dnsConfig:
+          nameservers:
+            - 192.0.2.1 # this is an example
         initContainers:
           01-init-db:
             image:
