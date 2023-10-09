@@ -23,14 +23,13 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           securityContext:
-            fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
+            runAsUser: 568
+            runAsGroup: 100   # was 568 before app template upgrade
+            fsGroup: 100
             supplementalGroups:
-              - 65539
-        dnsPolicy: "None"
-        dnsConfig:
-          nameservers:
-            - 127.0.0.2 # this is an example
+              - 34
+              - 100
+            fsGroupChangePolicy: "OnRootMismatch"
         initContainers:
           01-init-db:
             image:
@@ -47,14 +46,11 @@ spec:
             env:
               TZ: America/New_York
               PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__PORT: &port 80
+              PROWLARR__PORT: &port 9696
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
             envFrom: *envFrom
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
 
           gluetun:
             image:
@@ -70,7 +66,7 @@ spec:
               - name: VPN_ENDPOINT_PORT
                 value: "51820"
               - name: FIREWALL_INPUT_PORTS
-                value: "80"
+                value: "9696"
               - name: FIREWALL_OUTBOUND_SUBNETS
                 # Allow access to k8s subnets
                 value: "10.42.0.0/16,10.43.0.0/16"
