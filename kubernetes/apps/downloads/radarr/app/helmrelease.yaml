@@ -1,0 +1,200 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: radarr
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.0.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 100
+            supplementalGroups:
+              - 34
+              - 100
+              - 10000
+            fsGroupChangePolicy: "OnRootMismatch"
+        initContainers:
+          01-init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.9
+            envFrom: &envFrom
+              - secretRef:
+                  name: radarr-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.0.3.8127
+              pullPolicy: IfNotPresent
+            env:
+              TZ: America/New_York
+              PUSHOVER_DEBUG: "false"
+              RADARR__INSTANCE_NAME: Radarr
+              RADARR__PORT: &port 80
+              RADARR__LOG_LEVEL: info
+              RADARR__AUTHENTICATION_METHOD: External
+              RADARR__THEME: dark
+            envFrom: *envFrom
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 100
+
+          gluetun:
+            image:
+              repository: docker.io/qmcgaw/gluetun
+              tag: latest
+            securityContext:
+              privileged: true
+            networkPolicy:
+              enabled: false
+            env:
+              - name: VPN_INTERFACE
+                value: wg0
+              - name: VPN_ENDPOINT_PORT
+                value: "51820"
+              - name: FIREWALL_INPUT_PORTS
+                value: "80"
+              - name: FIREWALL_OUTBOUND_SUBNETS
+                # Allow access to k8s subnets
+                value: "10.42.0.0/16,10.43.0.0/16"
+              - name: SHADOWSOCKS
+                value: "on"
+              - name: DOT
+                value: "off"
+              - name: DNS_SERVER
+                value: "127.0.0.2"
+              - name: WIREGUARD_PRIVATE_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: WIREGUARD_PRIVATE_KEY
+              - name: WIREGUARD_PUBLIC_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: WIREGUARD_PUBLIC_KEY
+              - name: WIREGUARD_ADDRESSES
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: WIREGUARD_ADDRESSES
+              - name: VPN_SERVICE_PROVIDER
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: VPN_SERVICE_PROVIDER
+              - name: VPN_TYPE
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: VPN_TYPE
+              - name: VPN_ENDPOINT_IP
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: VPN_ENDPOINT_IP
+
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-18
+              tag: 1.8.1
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        className: "internal"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: radarr-config
+      scripts:
+        enabled: true
+        type: configMap
+        name: radarr-configmap
+        subPath: pushover-notify.sh
+        mountPath: /scripts/pushover-notify.sh
+        defaultMode: 0775
+        readOnly: true
+      media:
+        enabled: true
+        existingClaim: media
+      dnsdist-config:
+        type: configMap
+        name: radarr-dnsdist
+        advancedMounts:
+          main:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
+                readOnly: true
+      radarr-resolv-config:
+        type: configMap
+        name: radarr-resolv
+        advancedMounts:
+          main:
+            main:
+              - path: /etc/resolv.conf
+                subPath: resolv.conf
+                readOnly: true
+      gluetun-data:
+        type: emptyDir
+        advancedMounts:
+          main:
+            gluetun:
+              - path: /tmp/gluetun
+            port-forward:
+              - path: /tmp/gluetun
+                readOnly: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 2000Mi
