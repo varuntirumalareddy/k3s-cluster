@@ -54,7 +54,7 @@ spec:
               repository: docker.io/qmcgaw/gluetun
               tag: latest
             securityContext:
-               privileged: true
+              privileged: true
             networkPolicy:
               enabled: false
             env:
