@@ -49,6 +49,9 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
+            env:
+              - name: DNS_SERVER
+                value: "127.0.0.2"
             envFrom: *envFrom
             securityContext:
               runAsUser: 568
