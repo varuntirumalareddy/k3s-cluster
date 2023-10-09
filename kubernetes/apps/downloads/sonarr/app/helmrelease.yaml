@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: radarr
+  name: sonarr
   namespace: downloads
 spec:
   interval: 30m
@@ -50,21 +50,21 @@ spec:
               tag: 14.9
             envFrom: &envFrom
               - secretRef:
-                  name: radarr-secret
+                  name: sonarr-secret
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/radarr-develop
-              tag: 5.0.3.8127@sha256:efe518bdc1d29bda31d4aa7177b2881a7f47f114c067e662415d72abc0a0e9ea
+              repository: ghcr.io/onedr0p/sonarr-develop
+              tag: 4.0.0.688@sha256:cc88687162269b73c0e9bd6f147d4f7957639a4bdae3741cffe4bcabd7978e1f
               pullPolicy: IfNotPresent
             env:
               TZ: America/New_York
               PUSHOVER_DEBUG: "false"
-              RADARR__INSTANCE_NAME: Radarr
-              RADARR__PORT: &port 80
-              RADARR__LOG_LEVEL: info
-              RADARR__AUTHENTICATION_METHOD: External
-              RADARR__THEME: dark
+              SONARR__INSTANCE_NAME: Sonarr
+              SONARR__PORT: &port 80
+              SONARR__LOG_LEVEL: info
+              SONARR__AUTHENTICATION_METHOD: External
+              SONARR__THEME: dark
             envFrom: *envFrom
             securityContext:
               runAsUser: 568
@@ -97,32 +97,32 @@ spec:
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: radarr-secret
+                    name: sonarr-secret
                     key: WIREGUARD_PRIVATE_KEY
               - name: WIREGUARD_PUBLIC_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: radarr-secret
+                    name: sonarr-secret
                     key: WIREGUARD_PUBLIC_KEY
               - name: WIREGUARD_ADDRESSES
                 valueFrom:
                   secretKeyRef:
-                    name: radarr-secret
+                    name: sonarr-secret
                     key: WIREGUARD_ADDRESSES
               - name: VPN_SERVICE_PROVIDER
                 valueFrom:
                   secretKeyRef:
-                    name: radarr-secret
+                    name: sonarr-secret
                     key: VPN_SERVICE_PROVIDER
               - name: VPN_TYPE
                 valueFrom:
                   secretKeyRef:
-                    name: radarr-secret
+                    name: sonarr-secret
                     key: VPN_TYPE
               - name: VPN_ENDPOINT_IP
                 valueFrom:
                   secretKeyRef:
-                    name: radarr-secret
+                    name: sonarr-secret
                     key: VPN_ENDPOINT_IP
 
           dnsdist:
@@ -153,11 +153,11 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: radarr-config
+        existingClaim: sonarr-config
       scripts:
         enabled: true
         type: configMap
-        name: radarr-configmap
+        name: sonarr-configmap
         subPath: pushover-notify.sh
         mountPath: /scripts/pushover-notify.sh
         defaultMode: 0775
@@ -167,16 +167,16 @@ spec:
         existingClaim: media
       dnsdist-config:
         type: configMap
-        name: radarr-dnsdist
+        name: sonarr-dnsdist
         advancedMounts:
           main:
             dnsdist:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
-      radarr-resolv-config:
+      sonarr-resolv-config:
         type: configMap
-        name: radarr-resolv
+        name: sonarr-resolv
         advancedMounts:
           main:
             main:
