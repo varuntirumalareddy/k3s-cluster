@@ -169,7 +169,7 @@ spec:
         name: prowlarr-resolv
         advancedMounts:
           main:
-            dnsdist:
+            main:
               - path: /etc/resolv.conf
                 subPath: resolv.conf
                 readOnly: true
