@@ -24,12 +24,9 @@ spec:
         pod:
           securityContext:
             runAsUser: 568
-            runAsGroup: 100   # was 568 before app template upgrade
-            fsGroup: 100
-            supplementalGroups:
-              - 34
-              - 100
-            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
         initContainers:
           01-init-db:
             image:
