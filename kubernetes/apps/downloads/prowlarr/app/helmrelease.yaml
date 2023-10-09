@@ -49,15 +49,10 @@ spec:
               PROWLARR__LOG_LEVEL: info
               PROWLARR__AUTHENTICATION_METHOD: External
               PROWLARR__THEME: dark
-              DNS_SERVER: "127.0.0.2"
             envFrom: *envFrom
             securityContext:
               runAsUser: 568
               runAsGroup: 100
-            dnsPolicy: "None"
-            dnsConfig:
-              nameservers:
-                - 127.0.0.2
 
           gluetun:
             image:
@@ -118,18 +113,6 @@ spec:
             image:
               repository: docker.io/powerdns/dnsdist-18
               tag: 1.8.1
-
-          port-forward:
-            image:
-              repository: docker.io/snoringdragon/gluetun-qbittorrent-port-manager
-              tag: "1.0"
-            env:
-              - name: QBITTORRENT_SERVER
-                value: localhost
-              - name: QBITTORRENT_PORT
-                value: "80"
-              - name: PORT_FORWARDED
-                value: "/tmp/gluetun/forwarded_port"
 
     service:
       main:
