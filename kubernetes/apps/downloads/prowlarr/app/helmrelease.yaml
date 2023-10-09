@@ -54,6 +54,10 @@ spec:
             securityContext:
               runAsUser: 568
               runAsGroup: 100
+            dnsPolicy: "None"
+            dnsConfig:
+              nameservers:
+                - 127.0.0.2
 
           gluetun:
             image:
