@@ -10,3 +10,4 @@ resources:
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./sabnzbd/ks.yaml
