@@ -66,7 +66,9 @@ spec:
                   fieldRef:
                     fieldPath: status.podIP
               QBT_BitTorrent__Session__InterfaceName: eth0
-            envFrom: *envFrom
+            envFrom: &envFrom
+              - secretRef:
+                  name: qbittorrent-secret
             securityContext:
               runAsUser: 568
               runAsGroup: 100
