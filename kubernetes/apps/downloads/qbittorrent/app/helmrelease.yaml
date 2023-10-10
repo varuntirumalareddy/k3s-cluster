@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: prowlarr
+  name: qbittorrent
   namespace: downloads
 spec:
   interval: 30m
@@ -27,6 +27,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
     controllers:
       main:
@@ -38,6 +43,7 @@ spec:
             supplementalGroups:
               - 34
               - 100
+              - 10000
             fsGroupChangePolicy: "OnRootMismatch"
         initContainers:
           01-init-db:
@@ -46,20 +52,28 @@ spec:
               tag: 14.9@sha256:8d5134c75858d0e4672c5301cf225896be5347564cc3b79cab9dd38e37f0ea94
             envFrom: &envFrom
               - secretRef:
-                  name: prowlarr-secret
+                  name: qbittorrent-secret
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-develop
-              tag: 1.9.3.4013@sha256:53612010c44edc1db3810990236968898e7b3733a566777697288f13a3fdd5c5
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.5.5@sha256:16ddd3697593e8f0e82de2b2eae4edbe1b67eb04936cdb2dccae79fda3338850
               pullPolicy: IfNotPresent
             env:
               TZ: America/New_York
-              PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__PORT: &port 9696
-              PROWLARR__LOG_LEVEL: info
-              PROWLARR__AUTHENTICATION_METHOD: External
-              PROWLARR__THEME: dark
+              QBITTORRENT__INSTANCE_NAME: qbittorrent
+              QBITTORRENT__PORT: &port 8080
+              QBITTORRENT__BT_PORT: &bittorrentPort 50413
+              QBT_Preferences__WebUI__AlternativeUIEnabled: false
+              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
+              QBT_Preferences__WebUI__AuthSubnetWhitelist: 10.42.0.0/16
+              QBT_Preferences__WebUI__LocalHostAuth: false
+              QBT_BitTorrent__Session__Interface: eth0
+              QBT_BitTorrent__Session__InterfaceAddress:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+              QBT_BitTorrent__Session__InterfaceName: eth0
             envFrom: *envFrom
             securityContext:
               runAsUser: 568
@@ -79,10 +93,12 @@ spec:
               - name: VPN_ENDPOINT_PORT
                 value: "51820"
               - name: FIREWALL_INPUT_PORTS
-                value: "9696"
+                value: "8080"
               - name: FIREWALL_OUTBOUND_SUBNETS
                 # Allow access to k8s subnets
                 value: "10.42.0.0/16,10.43.0.0/16"
+              - name: VPN_PORT_FORWARDING
+                value: "on"
               - name: SHADOWSOCKS
                 value: "on"
               - name: DOT
@@ -92,38 +108,55 @@ spec:
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: qbittorrent-secret
                     key: WIREGUARD_PRIVATE_KEY
               - name: WIREGUARD_PUBLIC_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: qbittorrent-secret
                     key: WIREGUARD_PUBLIC_KEY
               - name: WIREGUARD_ADDRESSES
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: qbittorrent-secret
                     key: WIREGUARD_ADDRESSES
               - name: VPN_SERVICE_PROVIDER
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: qbittorrent-secret
                     key: VPN_SERVICE_PROVIDER
               - name: VPN_TYPE
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: qbittorrent-secret
                     key: VPN_TYPE
               - name: VPN_ENDPOINT_IP
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: qbittorrent-secret
                     key: VPN_ENDPOINT_IP
+              - name: VPN_PORT_FORWARDING_PROVIDER
+                valueFrom:
+                  secretKeyRef:
+                    name: qbittorrent-secret
+                    key: VPN_PORT_FORWARDING_PROVIDER
 
           dnsdist:
             image:
               repository: docker.io/powerdns/dnsdist-18
               tag: 1.8.1@sha256:545048d9d34767f707d122103ffbfccc2e40d9b459ff398164ed985db8631560
+
+          port-forward:
+            image:
+              repository: docker.io/snoringdragon/gluetun-qbittorrent-port-manager
+              tag: 1.0@sha256:5394a74784cc6b1d1140ed9e313fe9c5ba62d3076693027bb6a855eb4117d1fe
+            env:
+              - name: QBITTORRENT_SERVER
+                value: localhost
+              - name: QBITTORRENT_PORT
+                value: "8080"
+              - name: PORT_FORWARDED
+                value: "/tmp/gluetun/forwarded_port"
 
     service:
       main:
@@ -151,22 +184,25 @@ spec:
         type: emptyDir
       dnsdist-config:
         type: configMap
-        name: prowlarr-dnsdist
+        name: qbittorrent-dnsdist
         advancedMounts:
           main:
             dnsdist:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
-      prowlarr-resolv-config:
+      qbittorrent-resolv-config:
         type: configMap
-        name: prowlarr-resolv
+        name: qbittorrent-resolv
         advancedMounts:
           main:
             main:
               - path: /etc/resolv.conf
                 subPath: resolv.conf
                 readOnly: true
+      media:
+        enabled: true
+        existingClaim: media
       gluetun-data:
         type: emptyDir
         advancedMounts:
@@ -178,7 +214,7 @@ spec:
                 readOnly: true
     resources:
       requests:
-        cpu: 10m
-        memory: 100Mi
+        cpu: 49m
+        memory: 1024Mi
       limits:
-        memory: 500Mi
+        memory: 8192Mi

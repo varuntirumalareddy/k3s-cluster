@@ -1,0 +1,125 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: qbittorrent-manage
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.0.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: qbittorrent
+      namespace: downloads
+  values:
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          schedule: "@hourly"
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 100
+            supplementalGroups:
+              - 34
+              - 100
+              - 10000
+            fsGroupChangePolicy: "OnRootMismatch"
+        initContainers:
+          01-tag:
+            image: ghcr.io/buroa/qbittools
+            tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
+            imagePullPolicy: IfNotPresent
+            args: [
+              "tagging",
+              "--added-on",
+              "--expired",
+              "--last-activity",
+              "--sites",
+              "--unregistered",
+              "--not-working",
+              "--server", "qbittorrent.downloads.svc.cluster.local",
+              "--port", "80",
+              "--config", "/config/config.yaml"
+            ]
+            volumeMounts:
+              - { name: config-file, mountPath: /config/config.yaml, subPath: config.yaml }
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 100
+          02-unregistered:
+            image: ghcr.io/buroa/qbittools
+            tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
+            imagePullPolicy: IfNotPresent
+            args: [
+              "prune",
+              "--exclude-category", "manual",
+              "--exclude-category", "music.collection",
+              "--exclude-category", "music.import",
+              "--include-tag", "unregistered",
+              # "--dry-run",
+              "--server", "qbittorrent.downloads.svc.cluster.local",
+              "--port", "80"
+            ]
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 100
+        containers:
+          main:
+            image:
+              repository: ghcr.io/buroa/qbittools
+              tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
+              pullPolicy: IfNotPresent
+            args: [
+              "prune",
+              "--exclude-category", "manual",
+              "--exclude-category", "music.collection",
+              "--exclude-category", "music.import",
+              "--exclude-category", "overlord",
+              "--include-tag", "expired", # defined in config.yaml
+              "--exclude-tag", "activity:24h",
+              # "--dry-run",
+              "--server", "qbittorrent.downloads.svc.cluster.local",
+              "--port", "80"
+            ]
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 100
+    service:
+      main:
+        enabled: false
+    persistence:
+      config-file:
+        enabled: true
+        type: configMap
+        name: qbittorrent-tools-configmap # overriden by kustomizeconfig
+        mountPath: /config/config.yaml
+        subPath: config.yaml
+        readOnly: true
+    resources:
+      requests:
+        memory: 250Mi
+        cpu: 25m
+      limits:
+        memory: 500Mi
