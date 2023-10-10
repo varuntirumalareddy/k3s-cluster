@@ -60,7 +60,7 @@ spec:
               "--unregistered",
               "--not-working",
               "--server", "qbittorrent.downloads.svc.cluster.local",
-              "--port", "80",
+              "--port", "8080",
               "--config", "/config/config.yaml"
             ]
             volumeMounts:
@@ -80,7 +80,7 @@ spec:
               "--include-tag", "unregistered",
               # "--dry-run",
               "--server", "qbittorrent.downloads.svc.cluster.local",
-              "--port", "80"
+              "--port", "8080"
             ]
             securityContext:
               runAsUser: 568
@@ -101,7 +101,7 @@ spec:
               "--exclude-tag", "activity:24h",
               # "--dry-run",
               "--server", "qbittorrent.downloads.svc.cluster.local",
-              "--port", "80"
+              "--port", "8080"
             ]
             securityContext:
               runAsUser: 568

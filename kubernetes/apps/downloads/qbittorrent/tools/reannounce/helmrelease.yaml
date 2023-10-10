@@ -52,7 +52,7 @@ spec:
               "reannounce",
               "--process-seeding",
               "--server", "qbittorrent.downloads.svc.cluster.local",
-              "--port", "80"
+              "--port", "8080"
             ]
             securityContext:
               runAsUser: 568
