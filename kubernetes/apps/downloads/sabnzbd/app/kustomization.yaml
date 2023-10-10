@@ -9,9 +9,6 @@ resources:
   - ./volsync.yaml
   - ./gatus.yaml
 configMapGenerator:
-  - name: sabnzbd-configmap
-    files:
-      - ./scripts/pushover-notify.sh
   - name: sabnzbd-dnsdist
     files:
       - ./config/dnsdist.conf
