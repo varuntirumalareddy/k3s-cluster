@@ -8,6 +8,7 @@ resources:
   - ./helmrelease.yaml
   - ./volsync.yaml
   - ./gatus.yaml
+  - ./pvc.yaml
 configMapGenerator:
   - name: sabnzbd-dnsdist
     files:
