@@ -8,5 +8,5 @@ spec:
   accessModes: ["ReadWriteMany"]
   resources:
     requests:
-      storage: 2Gi
+      storage: 8Gi
   storageClassName: ceph-filesystem
