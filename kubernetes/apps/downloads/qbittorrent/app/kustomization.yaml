@@ -12,7 +12,7 @@ resources:
 configMapGenerator:
   - name: qbittorrent-scripts
     files:
-      - ./config/completed.sh
+      - ./scripts/completed.sh
   - name: qbittorrent-dnsdist
     files:
       - ./config/dnsdist.conf
