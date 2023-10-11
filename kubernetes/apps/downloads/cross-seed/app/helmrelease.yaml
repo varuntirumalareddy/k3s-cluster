@@ -68,7 +68,7 @@ spec:
         enabled: true
         type: secret
         name: cross-seed-secret
-        mountPath: /config/config.js
+        path: /config/config.js
         subPath: config.js
         readOnly: true
       media:
