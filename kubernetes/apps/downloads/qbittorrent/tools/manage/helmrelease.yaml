@@ -116,12 +116,10 @@ spec:
         enabled: true
         type: configMap
         name: qbittorrent-tools-configmap
-        advancedMounts:
-          main:
-            01-tag:
-              - path: /config/config.yaml
-                subPath: config.yaml
-                readOnly: true
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
     resources:
       requests:
         memory: 250Mi
