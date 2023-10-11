@@ -95,7 +95,7 @@ spec:
               - *host
 
     persistence:
-      media:
+      media-plex:
         enabled: true
         existingClaim: media-plex
       transcode:
