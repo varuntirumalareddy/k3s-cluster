@@ -176,6 +176,19 @@ spec:
       config:
         enabled: true
         existingClaim: qbittorrent-config
+        advancedMounts:
+          main:
+            main:
+              - path: /config
+      scripts:
+        type: configMap
+        name: qbittorrent-scripts
+        defaultMode: 0775
+        advancedMounts:
+          main:
+            main:
+              - path: /scripts
+                readOnly: true
       dnsdist-config:
         type: configMap
         name: qbittorrent-dnsdist
