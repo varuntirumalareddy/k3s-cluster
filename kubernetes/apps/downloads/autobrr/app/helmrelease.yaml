@@ -1,9 +1,9 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: prowlarr
+  name: autobrr
   namespace: downloads
 spec:
   interval: 30m
@@ -27,6 +27,9 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: volsync
+      namespace: volsync
   values:
     controllers:
       main:
@@ -47,20 +50,17 @@ spec:
               tag: 14.9@sha256:8d5134c75858d0e4672c5301cf225896be5347564cc3b79cab9dd38e37f0ea94
             envFrom: &envFrom
               - secretRef:
-                  name: prowlarr-secret
+                  name: autobrr-secret
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-develop
-              tag: 1.9.3.4013@sha256:53612010c44edc1db3810990236968898e7b3733a566777697288f13a3fdd5c5
-              pullPolicy: IfNotPresent
+              repository: ghcr.io/autobrr/autobrr
+              tag: v1.31.0@sha256:4c915f2710dedfdb9030f886cfb0714013c65d2463b703c2823fed986d97866e
             env:
-              TZ: America/New_York
-              PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__PORT: &port 9696
-              PROWLARR__LOG_LEVEL: info
-              PROWLARR__AUTHENTICATION_METHOD: External
-              PROWLARR__THEME: dark
+              AUTOBRR__CHECKFORUPDATES: "false"
+              AUTOBRR__HOST: 0.0.0.0
+              AUTOBRR__PORT: &port 80
+              AUTOBRR__LOGLEVEL: DEBUG
             envFrom: *envFrom
             securityContext:
               runAsUser: 568
@@ -80,7 +80,7 @@ spec:
               - name: VPN_ENDPOINT_PORT
                 value: "51820"
               - name: FIREWALL_INPUT_PORTS
-                value: "9696"
+                value: "80"
               - name: FIREWALL_OUTBOUND_SUBNETS
                 # Allow access to k8s subnets
                 value: "10.42.0.0/16,10.43.0.0/16"
@@ -93,32 +93,32 @@ spec:
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: autobrr-secret
                     key: WIREGUARD_PRIVATE_KEY
               - name: WIREGUARD_PUBLIC_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: autobrr-secret
                     key: WIREGUARD_PUBLIC_KEY
               - name: WIREGUARD_ADDRESSES
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: autobrr-secret
                     key: WIREGUARD_ADDRESSES
               - name: VPN_SERVICE_PROVIDER
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: autobrr-secret
                     key: VPN_SERVICE_PROVIDER
               - name: VPN_TYPE
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: autobrr-secret
                     key: VPN_TYPE
               - name: VPN_ENDPOINT_IP
                 valueFrom:
                   secretKeyRef:
-                    name: prowlarr-secret
+                    name: autobrr-secret
                     key: VPN_ENDPOINT_IP
 
           dnsdist:
@@ -135,33 +135,32 @@ spec:
     ingress:
       main:
         enabled: true
-        className: "internal"
+        ingressClassName: internal
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
-                service:
-                  name: main
-                  port: http
+                pathType: Prefix
         tls:
           - hosts:
               - *host
+
     persistence:
       config:
         enabled: true
         type: emptyDir
       dnsdist-config:
         type: configMap
-        name: prowlarr-dnsdist
+        name: autobrr-dnsdist
         advancedMounts:
           main:
             dnsdist:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
-      prowlarr-resolv-config:
+      autobrr-resolv-config:
         type: configMap
-        name: prowlarr-resolv
+        name: autobrr-resolv
         advancedMounts:
           main:
             main:
@@ -177,9 +176,16 @@ spec:
             port-forward:
               - path: /tmp/gluetun
                 readOnly: true
+      config-file:
+        enabled: true
+        type: configMap
+        name: autobrr-configmap
+        subPath: config.toml
+        mountPath: /config/config.toml
+        readOnly: true
     resources:
       requests:
+        memory: 250Mi
         cpu: 10m
-        memory: 100Mi
       limits:
         memory: 500Mi
