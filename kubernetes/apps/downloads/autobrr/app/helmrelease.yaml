@@ -182,8 +182,8 @@ spec:
         enabled: true
         type: configMap
         name: autobrr-configmap
+        Path: /config/config.toml
         subPath: config.toml
-        mountPath: /config/config.toml
         readOnly: true
     resources:
       requests:
