@@ -21,3 +21,7 @@ configMapGenerator:
       - ./config/resolv.conf
 generatorOptions:
   disableNameSuffixHash: true
+commonLabels:
+  app.kubernetes.io/name: qbittorrent
+  app.kubernetes.io/instance: qbittorrent
+  app.kubernetes.io/component: app
