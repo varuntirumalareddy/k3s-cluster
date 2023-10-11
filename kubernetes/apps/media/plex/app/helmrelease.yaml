@@ -95,9 +95,12 @@ spec:
               - *host
 
     persistence:
-      media-plex:
-        enabled: true
-        existingClaim: media-plex
+      media:
+        type: nfs
+        server: 192.168.120.12
+        path: /mnt/flashstor/media
+        globalMounts:
+          - path: /media/
       transcode:
         type: emptyDir
         globalMounts:
