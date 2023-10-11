@@ -48,8 +48,9 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
         initContainers:
           01-tag:
-            image: ghcr.io/buroa/qbittools
-            tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
+            image:
+              repository: ghcr.io/buroa/qbittools
+              tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
             imagePullPolicy: IfNotPresent
             args: [
               "tagging",
@@ -69,8 +70,9 @@ spec:
               runAsUser: 568
               runAsGroup: 100
           02-unregistered:
-            image: ghcr.io/buroa/qbittools
-            tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
+            image:
+              repository: ghcr.io/buroa/qbittools
+              tag: v0.9.5@sha256:9f23effa85ce39a1e7acef313f88fdb7e9438700fb8c6227d7b085321dfb7409
             imagePullPolicy: IfNotPresent
             args: [
               "prune",
