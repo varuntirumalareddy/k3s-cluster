@@ -9,5 +9,5 @@ configMapGenerator:
   - name: qbittorrent-tools-configmap
     files:
       - config.yaml=./config/config.yaml
-configurations:
-  - ./patches/kustomizeconfig.yaml
+#configurations:
+#  - ./patches/kustomizeconfig.yaml

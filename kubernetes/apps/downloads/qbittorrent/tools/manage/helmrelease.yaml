@@ -115,10 +115,13 @@ spec:
       config-file:
         enabled: true
         type: configMap
-        name: qbittorrent-tools-configmap # overriden by kustomizeconfig
-        mountPath: /config/config.yaml
-        subPath: config.yaml
-        readOnly: true
+        name: qbittorrent-tools-configmap
+        advancedMounts:
+          main:
+            01-tag:
+              - path: /config/config.yaml
+                subPath: config.yaml
+                readOnly: true
     resources:
       requests:
         memory: 250Mi
