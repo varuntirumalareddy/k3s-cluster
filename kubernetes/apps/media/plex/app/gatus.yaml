@@ -9,7 +9,7 @@ metadata:
 data:
   config.yaml: |
     endpoints:
-      - name: authelia
+      - name: plex
         group: external
         url: https://plex.${SECRET_DOMAIN}
         interval: 1m
