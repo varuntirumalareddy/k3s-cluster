@@ -9,7 +9,7 @@ resources:
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
-#  - ./qbittorrent/ks.yaml
+  - ./qbittorrent/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./cross-seed/ks.yaml
   - ./autobrr/ks.yaml
