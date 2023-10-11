@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: plex
+  namespace: media
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 2.0.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  interval: 30m
+  values:
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteOnce
+              size: 100Gi
+              storageClass: ceph-block
+              globalMounts:
+                - path: /config
+
+        pod:
+          enableServiceLinks: false
+          nodeSelector:
+            #intel.feature.node.kubernetes.io/gpu: "true"
+            nvidia.com/gpu.present: "true"
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 100
+            fsGroup: 100
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 44
+              - 109
+              - 100
+              - 10000
+              - 65539
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/plex
+              tag: 1.32.6.7557-1cf77d501@sha256:6f87b0811df009af1defc9afad6afa383b9d821a7fcaddc968df41ba445d321e
+            resources:
+              requests:
+                nvidia.com/gpu: 1  # Request 1 GPU
+                cpu: 100m
+                memory: 1000Mi
+              limits:
+                nvidia.com/gpu: 1  # Limit to 1 GPU
+                memory: 4000Mi
+            env:
+              NVIDIA_VISIBLE_DEVICES: all
+              NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
+
+    service:
+      main:
+        type: LoadBalancer
+        externalTrafficPolicy: Cluster
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.40.15"
+        ports:
+          http:
+            port: 32400
+
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        className: "external"
+        hosts:
+          - host: &host plex.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      media:
+        enabled: true
+        existingClaim: media
+      transcode:
+        type: emptyDir
+        globalMounts:
+          - path: /transcode
