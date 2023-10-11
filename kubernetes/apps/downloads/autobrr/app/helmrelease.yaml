@@ -179,12 +179,12 @@ spec:
               - path: /tmp/gluetun
                 readOnly: true
       config-file:
-        enabled: true
         type: configMap
         name: autobrr-configmap
-        Path: /config/config.toml
-        subPath: config.toml
-        readOnly: true
+        globalMounts:
+          - path: /config/config.toml
+            subPath: config.toml
+            readOnly: true
     resources:
       requests:
         memory: 250Mi
