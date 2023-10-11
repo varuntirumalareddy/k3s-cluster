@@ -97,7 +97,7 @@ spec:
     persistence:
       media:
         enabled: true
-        existingClaim: media
+        existingClaim: media-plex
       transcode:
         type: emptyDir
         globalMounts:
