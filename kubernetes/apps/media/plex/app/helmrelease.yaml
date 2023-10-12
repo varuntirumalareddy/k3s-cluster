@@ -95,12 +95,9 @@ spec:
               - *host
 
     persistence:
-      nfs-nas-media:
-        type: nfs
-        server: 192.168.120.12
-        path: /mnt/flashstor/media
-        globalMounts:
-          - path: /data/nas-media
+      plex-media:
+        enabled: true
+        existingClaim: plex-media
       transcode:
         type: emptyDir
         globalMounts:
