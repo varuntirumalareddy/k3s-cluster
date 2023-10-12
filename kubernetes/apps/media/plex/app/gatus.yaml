@@ -11,7 +11,7 @@ data:
     endpoints:
       - name: plex
         group: external
-        url: https://plex.${SECRET_DOMAIN}
+        url: https://plex.${SECRET_DOMAIN}/web/index.html
         interval: 1m
         ui:
           hide-hostname: true
