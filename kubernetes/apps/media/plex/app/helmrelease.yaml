@@ -68,10 +68,6 @@ spec:
 
     service:
       main:
-        type: LoadBalancer
-        externalTrafficPolicy: Cluster
-        annotations:
-          io.cilium/lb-ipam-ips: "192.168.40.15"
         ports:
           http:
             port: 32400
