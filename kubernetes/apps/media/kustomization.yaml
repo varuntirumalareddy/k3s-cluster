@@ -4,6 +4,6 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
-#  - ./plex-pvc.yaml
+  - ./plex-pvc.yaml
   # Flux-Kustomizations
-#  - ./plex/ks.yaml
+  - ./plex/ks.yaml
