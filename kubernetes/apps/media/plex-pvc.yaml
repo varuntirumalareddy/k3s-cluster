@@ -2,7 +2,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: plex-media
+  name: plex-media-nfs
 provisioner: nfs
 parameters:
   archiveOnDelete: "false"
@@ -12,7 +12,7 @@ kind: PersistentVolume
 metadata:
   name: plex-media
 spec:
-  storageClassName: plex-media
+  storageClassName: plex-media-nfs
   capacity:
     storage: 1Mi # Size does not matter ...twss
   accessModes: ["ReadWriteMany"]
@@ -32,10 +32,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media
-  namespace: downloads
+  namespace: media
 spec:
   accessModes: ["ReadWriteMany"]
-  storageClassName: media
+  storageClassName: plex-media-nfs
   resources:
     requests:
       storage: 1Mi # Size does not matter ...twss
