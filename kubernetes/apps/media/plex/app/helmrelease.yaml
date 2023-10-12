@@ -95,12 +95,12 @@ spec:
               - *host
 
     persistence:
-      media:
+      nfs-nas-media:
         type: nfs
         server: 192.168.120.12
         path: /mnt/flashstor/media
         globalMounts:
-          - path: /media/
+          - path: /data/nas-media
       transcode:
         type: emptyDir
         globalMounts:
