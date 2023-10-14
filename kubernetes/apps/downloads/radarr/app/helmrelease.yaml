@@ -128,7 +128,7 @@ spec:
           dnsdist:
             image:
               repository: docker.io/powerdns/dnsdist-18
-              tag: 1.8.1@sha256:545048d9d34767f707d122103ffbfccc2e40d9b459ff398164ed985db8631560
+              tag: 1.8.2@sha256:06584eb44627c46b3718ee754c36a81acf66fdf423b162cae9ecfa69bb362c9e
 
     service:
       main:
