@@ -16,10 +16,10 @@ session:
           port: 26379
         - host: redis-node-2.redis-headless.database
           port: 26379
-  regulation:
-    max_retries: 3
-    find_time: 2m
-    ban_time: 5m
+regulation:
+  max_retries: 3
+  find_time: 2m
+  ban_time: 5m
 
 access_control:
   default_policy: two_factor
