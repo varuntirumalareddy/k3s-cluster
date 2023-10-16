@@ -1,6 +1,11 @@
 # yaml-language-server: $schema=https://gist.githubusercontent.com/james-d-elliott/756de37a4398b3445072a60d674905c6/raw/ce90833b1ce145cb701184557dd964fa7546f19a/jsonschema.json
 ---
 session:
+  name: authelia_session
+  same_site: lax
+  expiration: 24h
+  inactivity: 24h
+  remember_me_duration: 1M
   redis:
     high_availability:
       sentinel_name: redis-master
@@ -11,6 +16,10 @@ session:
           port: 26379
         - host: redis-node-2.redis-headless.database
           port: 26379
+  regulation:
+    max_retries: 3
+    find_time: 2m
+    ban_time: 5m
 
 access_control:
   default_policy: two_factor
