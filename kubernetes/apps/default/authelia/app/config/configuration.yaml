@@ -45,8 +45,8 @@ access_control:
       policy: two_factor
     - domain: ["echo-server.${SECRET_DOMAIN}"]
       policy: two_factor
-    - domain: ["kubernetes.${SECRET_DOMAIN}"]
-      policy: one_factor
+#    - domain: ["kubernetes.${SECRET_DOMAIN}"]
+#      policy: one_factor
     - domain: ["autobrr.${SECRET_DOMAIN}"]
       policy: one_factor
 
