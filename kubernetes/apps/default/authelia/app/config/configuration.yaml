@@ -3,8 +3,8 @@
 session:
   name: authelia_session
   same_site: lax
-  expiration: 24h
-  inactivity: 24h
+  expiration: 4h
+  inactivity: 4h
   remember_me_duration: 1M
   redis:
     high_availability:
@@ -45,6 +45,10 @@ access_control:
       policy: two_factor
     - domain: ["echo-server.${SECRET_DOMAIN}"]
       policy: two_factor
+    - domain: ["kubernetes.${SECRET_DOMAIN}"]
+      policy: single_factor
+    - domain: ["autobrr.${SECRET_DOMAIN}"]
+      policy: single_factor
 
 identity_providers:
   oidc:
