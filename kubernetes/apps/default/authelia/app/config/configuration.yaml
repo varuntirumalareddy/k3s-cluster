@@ -43,6 +43,8 @@ access_control:
       policy: two_factor
     - domain: ["prometheus.${SECRET_DOMAIN}"]
       policy: two_factor
+    - domain: ["echo-server.${SECRET_DOMAIN}"]
+      policy: two_factor
 
 identity_providers:
   oidc:
