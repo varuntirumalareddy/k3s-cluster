@@ -146,7 +146,7 @@ spec:
               tag: 1.0@sha256:5394a74784cc6b1d1140ed9e313fe9c5ba62d3076693027bb6a855eb4117d1fe
             env:
               - name: QBITTORRENT_SERVER
-                value: qbittorrent.downloads.svc.cluster.local
+                value: localhost
               - name: QBITTORRENT_PORT
                 value: "8080"
               - name: PORT_FORWARDED
