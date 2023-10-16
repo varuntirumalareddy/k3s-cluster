@@ -28,6 +28,12 @@ access_control:
       policy: two_factor
     - domain: ["qbittorrent.${SECRET_DOMAIN}"]
       policy: two_factor
+    - domain: ["status.${SECRET_DOMAIN}"]
+      policy: two_factor
+    - domain: ["alertmanager.${SECRET_DOMAIN}"]
+      policy: two_factor
+    - domain: ["prometheus.${SECRET_DOMAIN}"]
+      policy: two_factor
 
 identity_providers:
   oidc:
