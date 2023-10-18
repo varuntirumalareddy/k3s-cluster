@@ -59,6 +59,8 @@ access_control:
       policy: one_factor
     - domain: ["awx.${SECRET_DOMAIN}"]
       policy: one_factor
+    - domain: ["kubernetes.${SECRET_DOMAIN}"]
+      policy: one_factor
 
 identity_providers:
   oidc:
