@@ -11,13 +11,13 @@ data:
     endpoints:
       - name: loki
         group: guarded
-        url: 1.1.1.1
+        url: 10.43.0.10
         interval: 1m
         ui:
           hide-hostname: true
           hide-url: true
         dns:
-          query-name: loki.${SECRET_DOMAIN}
+          query-name: loki.monitoring.svc.cluster.local
           query-type: A
         conditions:
           - "len([BODY]) == 0"
