@@ -54,7 +54,7 @@ access_control:
     - domain: ["thanos-query-frontend.${SECRET_DOMAIN}"]
       policy: two_factor
     - domain: ["gitops.${SECRET_DOMAIN}"]
-      policy: two_factor
+      policy: one_factor
 
 identity_providers:
   oidc:
