@@ -41,6 +41,9 @@ spec:
         pathType: Prefix
         ingressClassName: internal
         annotations:
+          cert-manager.io/cluster-issuer: gts-production
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
         hosts:
@@ -48,6 +51,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: alertmanager-cert
       alertmanagerSpec:
         replicas: 2
         useExistingSecret: true
@@ -126,6 +130,9 @@ spec:
         enabled: true
         ingressClassName: internal
         annotations:
+          cert-manager.io/cluster-issuer: gts-production
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
         pathType: Prefix
@@ -134,6 +141,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: prometheus-cert
       thanosService:
         enabled: true
       thanosServiceMonitor:

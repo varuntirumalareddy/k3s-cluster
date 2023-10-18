@@ -49,6 +49,10 @@ access_control:
       policy: two_factor
     - domain: ["autobrr.${SECRET_DOMAIN}"]
       policy: one_factor
+    - domain: ["loki.${SECRET_DOMAIN}"]
+      policy: two_factor
+    - domain: ["thanos-query-frontend.${SECRET_DOMAIN}"]
+      policy: two_factor
 
 identity_providers:
   oidc:
