@@ -5,7 +5,7 @@ metadata:
   namespace: one-password
   annotations:
     # Use cert-manager ClusterIssuer
-    cert-manager.io/cluster-issuer: letsencrypt-production
+    cert-manager.io/cluster-issuer: gts-production
     # Allow cert-manager to edit this Ingress resource in-place
     acme.cert-manager.io/http01-edit-in-place: "true"
     # Issue temporary self-signed cert

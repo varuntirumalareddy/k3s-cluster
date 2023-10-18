@@ -71,7 +71,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "networking/achva-network-gts-production-tls"
+        default-ssl-certificate: "networking/gts-production-tls-ec"
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
