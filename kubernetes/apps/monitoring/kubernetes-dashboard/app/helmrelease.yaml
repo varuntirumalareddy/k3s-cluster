@@ -31,7 +31,7 @@ spec:
       - --disable-settings-authorizer
     ingress:
       enabled: true
-      className: internal
+      ingressClassName: internal
       annotations:
         cert-manager.io/cluster-issuer: gts-production
         cert-manager.io/private-key-algorithm: ECDSA
