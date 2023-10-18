@@ -13,7 +13,7 @@ spec:
   ingress_class_name: internal
   hostname: awx.${SECRET_DOMAIN}
   ingress_annotations: |
-    cert-manager.io/cluster-issuer: letsencrypt-production
+    cert-manager.io/cluster-issuer: gts-production
     acme.cert-manager.io/http01-edit-in-place: "true"
     cert-manager.io/issue-temporary-certificate: "true"
   ingress_tls_secret: awx-tls-custom-secret
