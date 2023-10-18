@@ -333,15 +333,17 @@ spec:
       ingressClassName: external
       annotations:
         external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+        cert-manager.io/cluster-issuer: gts-production
+        cert-manager.io/private-key-algorithm: ECDSA
+        cert-manager.io/private-key-size: 384
       hosts:
         - &host grafana.${SECRET_DOMAIN}
       tls:
         - hosts:
             - *host
+          secretName: grafana-cert
     persistence:
       enabled: false
-#      storageClassName: ceph-block
-#      size: 10Gi
     testFramework:
       enabled: false
     topologySpreadConstraints:
