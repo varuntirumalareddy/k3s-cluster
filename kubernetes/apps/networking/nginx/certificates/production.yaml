@@ -21,6 +21,9 @@ metadata:
   name: "gts-production-tls-ec"
   namespace: networking
 spec:
+  privateKey:
+    algorithm: ECDSA
+    size: 521
   secretName: "gts-production-tls-ec"
   issuerRef:
     name: gts-production
