@@ -55,6 +55,10 @@ access_control:
       policy: two_factor
     - domain: ["gitops.${SECRET_DOMAIN}"]
       policy: one_factor
+    - domain: ["rook.${SECRET_DOMAIN}"]
+      policy: one_factor
+    - domain: ["awx.${SECRET_DOMAIN}"]
+      policy: one_factor
 
 identity_providers:
   oidc:
