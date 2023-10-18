@@ -15,7 +15,7 @@ spec:
   ingress_annotations: |
     cert-manager.io/cluster-issuer: gts-production
     cert-manager.io/private-key-algorithm: ECDSA
-    cert-manager.io/private-key-size: 384
+    cert-manager.io/private-key-size: "384"
   ingress_tls_secret: awx-tls-custom-secret
   secret_key_secret: custom-awx-secret-key
   postgres_configuration_secret: awx-external-db-secret

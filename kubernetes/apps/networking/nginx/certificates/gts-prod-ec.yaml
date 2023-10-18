@@ -7,7 +7,7 @@ metadata:
 spec:
   privateKey:
     algorithm: ECDSA
-    size: 384
+    size: "384"
   secretName: "gts-production-tls-ec"
   issuerRef:
     name: gts-production

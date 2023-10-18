@@ -6,7 +6,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: gts-production
     cert-manager.io/private-key-algorithm: ECDSA
-    cert-manager.io/private-key-size: 384
+    cert-manager.io/private-key-size: "384"
 spec:
   # You may need to specify the IngressClass if your cluster does not have a
   # default IngressClass, e.g. for Ingress NGINX Controller, uncomment the
