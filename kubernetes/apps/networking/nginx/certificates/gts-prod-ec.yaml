@@ -2,12 +2,15 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "${SECRET_DOMAIN/./-}-production"
+  name: "gts-production-tls-ec"
   namespace: networking
 spec:
-  secretName: "${SECRET_DOMAIN/./-}-production-tls"
+  privateKey:
+    algorithm: ECDSA
+    size: 384
+  secretName: "gts-production-tls-ec"
   issuerRef:
-    name: letsencrypt-production
+    name: gts-production
     kind: ClusterIssuer
   commonName: "${SECRET_DOMAIN}"
   dnsNames:
