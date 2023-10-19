@@ -40,9 +40,7 @@ spec:
         nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
         nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
         nginx.ingress.kubernetes.io/configuration-snippet: |
-          auth_request_set $token $upstream_http_authorization;
-          proxy_set_header Authorization "Bearer ${KUBERNETES_DASH_TOKEN}";
-          proxy_pass_header Authorization;
+          proxy-add-original-uri-header: "false"
       hosts:
         - &host "kubernetes.${SECRET_DOMAIN}"
       tls:
