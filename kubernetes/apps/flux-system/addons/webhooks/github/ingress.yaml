@@ -25,3 +25,4 @@ spec:
   tls:
     - hosts:
         - *host
+      secretName: github-webhook-cert
