@@ -6,7 +6,9 @@ metadata:
   namespace: flux-system
   annotations:
     external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-    hajimari.io/enable: "false"
+    cert-manager.io/cluster-issuer: gts-production
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-size: "384"
 spec:
   ingressClassName: external
   rules:
