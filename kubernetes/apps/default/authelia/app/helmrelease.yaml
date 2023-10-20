@@ -119,6 +119,9 @@ spec:
         ingressClassName: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+          cert-manager.io/cluster-issuer: gts-production
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             add_header Cache-Control "no-store";
             add_header Pragma "no-cache";
@@ -132,6 +135,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: authelia-web-cert
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568

@@ -60,6 +60,10 @@ spec:
       main:
         enabled: true
         ingressClassName: internal
+        annotations:
+          cert-manager.io/cluster-issuer: gts-production
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
         hosts:
           - host: &host lldap.${SECRET_DOMAIN}
             paths:
@@ -68,6 +72,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: lldap-web-cert
     persistence:
       data:
         enabled: true
