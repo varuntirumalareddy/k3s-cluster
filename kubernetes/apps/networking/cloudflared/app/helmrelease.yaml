@@ -31,6 +31,7 @@ spec:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/name: cloudflared
+
         containers:
           main:
             image:
