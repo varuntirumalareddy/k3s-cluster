@@ -10,12 +10,13 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
+  maxHistory: 3
   install:
     remediation:
       retries: 3
@@ -26,9 +27,15 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/flaresolverr/flaresolverr
-      tag: v3.3.6
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/flaresolverr/flaresolverr
+              tag: v3.3.6
     env:
       TZ: America/New_York
       LOG_LEVEL: info
@@ -40,6 +47,6 @@ spec:
     resources:
       requests:
         memory: 100Mi
-        cpu: 100m
+        cpu: 50m
       limits:
-        memory: 1024Mi
+        memory: 292Mi
