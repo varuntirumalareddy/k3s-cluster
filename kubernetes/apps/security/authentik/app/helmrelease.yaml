@@ -61,12 +61,6 @@ spec:
     postgresql:
       enabled: false
 
-    autoscaling:
-      server:
-        enabled: true
-      worker:
-        enabled: true
-
     prometheus:
       rules:
         create: true
