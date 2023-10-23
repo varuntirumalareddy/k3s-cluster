@@ -10,12 +10,13 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
+  maxHistory: 3
   install:
     remediation:
       retries: 3
@@ -26,36 +27,71 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/onedr0p/postgres-init:14.9
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: gatus-secret
-      02-config-sync:
-        image: ghcr.io/kiwigrid/k8s-sidecar:1.25.2
-        imagePullPolicy: IfNotPresent
-        env:
-          - { name: FOLDER, value: /config }
-          - { name: LABEL, value: gatus.io/enabled }
-          - { name: NAMESPACE, value: ALL }
-          - { name: RESOURCE, value: both }
-          - { name: UNIQUE_FILENAMES, value: "true" }
-          - { name: METHOD, value: LIST }
-        volumeMounts:
-          - { name: config, mountPath: /config }
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/twin/gatus
-      tag: v5.6.0
-    env:
-      TZ: America/New_York
-      GATUS_CONFIG_PATH: /config
-      CUSTOM_WEB_PORT: &port 80
-    envFrom: *envFrom
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          01-init-db:
+            image: ghcr.io/onedr0p/postgres-init:14.9
+            imagePullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: gatus-secret
+          02-config-sync:
+            image: ghcr.io/kiwigrid/k8s-sidecar:1.25.2
+            imagePullPolicy: IfNotPresent
+            env:
+              - { name: FOLDER, value: /config }
+              - { name: LABEL, value: gatus.io/enabled }
+              - { name: NAMESPACE, value: ALL }
+              - { name: RESOURCE, value: both }
+              - { name: UNIQUE_FILENAMES, value: "true" }
+              - { name: METHOD, value: LIST }
+            volumeMounts:
+              - { name: config, mountPath: /config }
+        containers:
+          main:
+            image:
+              repository: ghcr.io/twin/gatus
+              tag: v5.6.0
+            env:
+              TZ: America/New_York
+              GATUS_CONFIG_PATH: /config
+              CUSTOM_WEB_PORT: &port 80
+            envFrom: *
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256M
+              limits:
+                memory: 512M
+          config-sync:
+            image:
+              repository: ghcr.io/kiwigrid/k8s-sidecar
+              tag: 1.25.2
+            imagePullPolicy: IfNotPresent
+            env:
+              - { name: FOLDER, value: /config }
+              - { name: LABEL, value: gatus.io/enabled }
+              - { name: NAMESPACE, value: ALL }
+              - { name: RESOURCE, value: both }
+              - { name: UNIQUE_FILENAMES, value: "true" }
+              - { name: METHOD, value: WATCH }
+            volumeMounts:
+              - { name: config, mountPath: /config }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10M
+              limits:
+                memory: 128M
     service:
       main:
         ports:
@@ -85,7 +121,9 @@ spec:
           - host: &host status.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -93,11 +131,7 @@ spec:
     serviceAccount:
       create: true
       name: gatus
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
+
     persistence:
       config:
         enabled: true
@@ -106,25 +140,7 @@ spec:
         enabled: true
         type: configMap
         name: gatus-configmap
-        mountPath: /config/config.yaml
-        subPath: config.yaml
-        readOnly: true
-    resources:
-      requests:
-        cpu: 100m
-        memory: 100Mi
-      limits:
-        memory: 500Mi
-    sidecars:
-      config-sync:
-        image: ghcr.io/kiwigrid/k8s-sidecar:1.25.2
-        imagePullPolicy: IfNotPresent
-        env:
-          - { name: FOLDER, value: /config }
-          - { name: LABEL, value: gatus.io/enabled }
-          - { name: NAMESPACE, value: ALL }
-          - { name: RESOURCE, value: both }
-          - { name: UNIQUE_FILENAMES, value: "true" }
-          - { name: METHOD, value: WATCH }
-        volumeMounts:
-          - { name: config, mountPath: /config }
+        globalMounts:
+          - path: /config/config.toml
+            subPath: config.toml
+            readOnly: true
