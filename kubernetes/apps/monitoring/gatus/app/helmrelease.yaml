@@ -65,7 +65,7 @@ spec:
               TZ: America/New_York
               GATUS_CONFIG_PATH: /config
               CUSTOM_WEB_PORT: &port 80
-            envFrom: *
+            envFrom: *envFrom
             resources:
               requests:
                 cpu: 10m
