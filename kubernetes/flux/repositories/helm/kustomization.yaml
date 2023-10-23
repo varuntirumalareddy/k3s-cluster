@@ -6,7 +6,6 @@ resources:
   - ./bjw-s.yaml
   - ./cilium.yaml
   - ./coredns.yaml
-  - ./csi-driver-nfs.yaml
   - ./external-dns.yaml
   - ./grafana.yaml
   - ./ingress-nginx.yaml
@@ -22,7 +21,6 @@ resources:
   - ./awx.yaml
   - ./nvidia.yaml
   - ./tf-controller.yaml
-  - ./vector.yaml
   - ./rook-ceph.yaml
   - ./piraeus.yaml
   - ./node-feature-discovery.yaml
@@ -31,3 +29,4 @@ resources:
   - ./backube.yaml
   - ./cloudnative-pg.yaml
   - ./external-secrets.yaml
+  - ./authentik.yaml
