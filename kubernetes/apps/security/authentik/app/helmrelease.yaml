@@ -21,7 +21,7 @@ spec:
       secret.reloader.stakater.com/reload: authentik-secret
     image:
       repository: thegrandpkizzle/authentik
-      tag: 2023.8.3-abc2229
+      tag: thegrandpkizzle/authentik:2023.8.3-151428b@sha256:c9f9a64191120ddccab7032aa8ef3e2f3d9b983748f0716f880d7d0cbc5de74b
     global:
       storageClass: ceph-block
     initContainers:
