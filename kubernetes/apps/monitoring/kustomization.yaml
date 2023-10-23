@@ -10,4 +10,4 @@ resources:
   - ./kube-state-metrics/ks.yaml
 #  - ./thanos/ks.yaml
 #  - ./loki/ks.yaml
-  - ./gatus/ks.yaml
+#  - ./gatus/ks.yaml
