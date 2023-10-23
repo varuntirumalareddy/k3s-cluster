@@ -33,10 +33,12 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
+            fsGroup: 100
+            supplementalGroups:
+              - 34
+              - 100
+              - 10000
+            fsGroupChangePolicy: "OnRootMismatch"
         initContainers:
           01-init-db:
             image:
