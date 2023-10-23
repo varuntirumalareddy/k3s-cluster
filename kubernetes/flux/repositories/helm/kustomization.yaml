@@ -23,7 +23,6 @@ resources:
   - ./nvidia.yaml
   - ./tf-controller.yaml
   - ./vector.yaml
-  - ./windmill.yaml
   - ./rook-ceph.yaml
   - ./piraeus.yaml
   - ./node-feature-discovery.yaml
@@ -32,4 +31,3 @@ resources:
   - ./backube.yaml
   - ./cloudnative-pg.yaml
   - ./external-secrets.yaml
-  - ./angelnu-helm-charts.yaml
