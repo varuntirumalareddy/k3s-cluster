@@ -16,5 +16,5 @@ generatorOptions:
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 commonLabels:
-  app.kubernetes.io/name: cloudflared
-  app.kubernetes.io/instance: cloudflared
+  app.kubernetes.io/name: gatus
+  app.kubernetes.io/instance: gatus
