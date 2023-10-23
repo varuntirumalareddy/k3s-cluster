@@ -39,13 +39,17 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
           01-init-db:
-            image: ghcr.io/onedr0p/postgres-init:14.9
+            image:
+            repository: ghcr.io/onedr0p/postgres-init
+            tag: 14.9@sha256:170970a909f892149cbf99be8d86c26f0090bc7d2fbd1c34dd770b4bf7e08458
             imagePullPolicy: IfNotPresent
             envFrom: &envFrom
               - secretRef:
                   name: gatus-secret
           02-config-sync:
-            image: ghcr.io/kiwigrid/k8s-sidecar:1.25.2
+            image:
+              repository: ghcr.io/kiwigrid/k8s-sidecar
+              tag: 1.25.2@sha256:cb4c638ffb1fa1eb49678e0f0423564b39254533f63f4ca6a6c24260472e0c4f
             imagePullPolicy: IfNotPresent
             env:
               - { name: FOLDER, value: /config }
@@ -60,7 +64,7 @@ spec:
           main:
             image:
               repository: ghcr.io/twin/gatus
-              tag: v5.6.0
+              tag: v5.6.0@sha256:140f28f5bfdf6429cfc0408e4a5820f7b25b23b9becdd9cf22d1f5adcd0e8cd4
             env:
               TZ: America/New_York
               GATUS_CONFIG_PATH: /config
@@ -75,7 +79,7 @@ spec:
           config-sync:
             image:
               repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.25.2
+              tag: 1.25.2@sha256:cb4c638ffb1fa1eb49678e0f0423564b39254533f63f4ca6a6c24260472e0c4f
             imagePullPolicy: IfNotPresent
             env:
               - { name: FOLDER, value: /config }
