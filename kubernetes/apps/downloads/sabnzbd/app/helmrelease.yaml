@@ -133,7 +133,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           cert-manager.io/cluster-issuer: gts-production
           cert-manager.io/private-key-algorithm: ECDSA
