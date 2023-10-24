@@ -26,6 +26,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    annotations:
+      secret.reloader.stakater.com/reload: grafana-secret
     extraInitContainers:
       - name: 01-init-db
         image: ghcr.io/onedr0p/postgres-init:14.9
@@ -35,11 +37,6 @@ spec:
               name: &secret grafana-secret
     replicas: 2
     env:
-      GF_AUTH_GENERIC_OAUTH_API_URL: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
-      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://sso.${SECRET_DOMAIN}/application/o/authorize/
-      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://sso.${SECRET_DOMAIN}/application/o/token/
-      GF_AUTH_SIGNOUT_REDIRECT_URL: https://sso.${SECRET_DOMAIN}/application/o/grafana/end-session/
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
@@ -56,22 +53,27 @@ spec:
       auth:
         oauth_auto_login: true
         oauth_allow_insecure_email_lookup: true
+        signout_redirect_url: https://authentik.${SECRET_DOMAIN}/application/o/grafana/end-session/
+      auth.basic:
+        enabled: false
       auth.generic_oauth:
         enabled: true
         name: Authentik
         icon: signin
-        scopes: openid profile email groups
+        scopes: openid profile email
         empty_scopes: false
         login_attribute_path: preferred_username
         groups_attribute_path: groups
         name_attribute_path: name
         use_pkce: true
-      auth.generic_oauth.group_mapping:
-        org_id: 1
+        client_id: g798kTAKQoZMvp6hJMeCZXMATW3rvhQbxq
+        client_secret: # Set by env vars
+        auth_url: https://authentik.${SECRET_DOMAIN}/application/o/authorize/
+        token_url: https://authentik.${SECRET_DOMAIN}/application/o/token/
+        api_url: https://authentik.${SECRET_DOMAIN}/application/o/userinfo/
+        # map user groups to Grafana roles
         role_attribute_path: |
-          contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'people') && 'Viewer'
-      auth.basic:
-        enabled: false
+          contains(groups[*], 'Grafana admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer
       auth.anonymous:
         enabled: false
         # org_id: 1
