@@ -73,7 +73,7 @@ spec:
         api_url: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
         # map user groups to Grafana roles
         role_attribute_path: |
-          contains(groups[*], 'Grafana admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer
+          contains(groups[*], 'Grafana admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
       auth.anonymous:
         enabled: false
         # org_id: 1
