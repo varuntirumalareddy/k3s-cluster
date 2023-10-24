@@ -59,15 +59,14 @@ spec:
         enabled: true
         name: Authentik
         icon: signin
-        scopes: openid profile email
+        scopes: email openid profile
         client_id: T9PlQOMcnQxT2NwyhsSBmVAbmmTO9UPjzqwL4BCD
         client_secret: # Set by env vars
         auth_url: https://sso.${SECRET_DOMAIN}/application/o/authorize/
         token_url: https://sso.${SECRET_DOMAIN}/application/o/token/
         api_url: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
         # map user groups to Grafana roles
-        role_attribute_path: |
-          role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
+        role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
       auth.anonymous:
         enabled: false
         # org_id: 1
