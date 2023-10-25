@@ -7,6 +7,13 @@ storage:
   caching: true
 metrics: true
 debug: false
+security:
+  oidc:
+    issuer-url: "https://sso.${SECRET_DOMAIN}"
+    redirect-url: "https://status.achva.network/authorization-code/callback"
+    client-id: "TcKuo0hztS5WBlOSj5AB3HDCeFCO2eiAMAT1kdcX"
+    client-secret: ${CUSTOM_GATUS_OAUTH_SECRET}
+    scopes: ["openid"]
 ui:
   title: Status | Gatus
   header: Status
