@@ -52,6 +52,7 @@ spec:
         reporting_enabled: false
       auth:
         oauth_auto_login: true
+        oauth_allow_insecure_email_lookup: true
         signout_redirect_url: https://sso.${SECRET_DOMAIN}/application/o/grafana/end-session/
       auth.basic:
         enabled: false
