@@ -60,6 +60,10 @@ spec:
         name: Authentik
         icon: signin
         scopes: email openid profile
+        empty_scopes: false
+        login_attribute_path: preferred_username
+        groups_attribute_path: groups
+        name_attribute_path: name
         client_id: T9PlQOMcnQxT2NwyhsSBmVAbmmTO9UPjzqwL4BCD
         client_secret: # Set by env vars
         auth_url: https://sso.${SECRET_DOMAIN}/application/o/authorize/
