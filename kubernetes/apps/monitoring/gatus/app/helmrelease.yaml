@@ -11,12 +11,11 @@ spec:
     spec:
       chart: app-template
       version: 2.0.3
-      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -31,45 +30,45 @@ spec:
       main:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            fsGroup: 100
-            supplementalGroups:
-              - 34
-              - 100
-              - 10000
-            fsGroupChangePolicy: "OnRootMismatch"
         initContainers:
-          01-init-db:
+          init-db:
+            order: 1
             image:
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 14.9@sha256:170970a909f892149cbf99be8d86c26f0090bc7d2fbd1c34dd770b4bf7e08458
-            imagePullPolicy: IfNotPresent
+              tag: 14.9
+              pullPolicy: IfNotPresent
             envFrom: &envFrom
               - secretRef:
                   name: gatus-secret
-          02-config-sync:
-            image:
+          # TODO: Convert this to a proper 'sidecar' container someday
+          init-config:
+            order: 2
+            image: &configSyncImage
               repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.25.2@sha256:cb4c638ffb1fa1eb49678e0f0423564b39254533f63f4ca6a6c24260472e0c4f
-            imagePullPolicy: IfNotPresent
+              tag: 1.25.2
+              pullPolicy: IfNotPresent
             env:
-              - { name: FOLDER, value: /config }
-              - { name: LABEL, value: gatus.io/enabled }
-              - { name: NAMESPACE, value: ALL }
-              - { name: RESOURCE, value: both }
-              - { name: UNIQUE_FILENAMES, value: "true" }
-              - { name: METHOD, value: LIST }
-            volumeMounts:
-              - { name: config, mountPath: /config }
+              FOLDER: /config
+              LABEL: gatus.io/enabled
+              NAMESPACE: ALL
+              RESOURCE: both
+              UNIQUE_FILENAMES: true
+              METHOD: LIST
+            resources: &configSyncResources
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 128Mi
         containers:
           main:
             image:
               repository: ghcr.io/twin/gatus
-              tag: v5.6.0@sha256:140f28f5bfdf6429cfc0408e4a5820f7b25b23b9becdd9cf22d1f5adcd0e8cd4
+              tag: v5.6.0
             env:
               TZ: America/New_York
               GATUS_CONFIG_PATH: /config
+              CUSTOM_WEB_PORT: &port 80
             envFrom: *envFrom
             resources:
               requests:
@@ -78,54 +77,35 @@ spec:
               limits:
                 memory: 512M
           config-sync:
-            image:
-              repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.25.2@sha256:cb4c638ffb1fa1eb49678e0f0423564b39254533f63f4ca6a6c24260472e0c4f
-            imagePullPolicy: IfNotPresent
+            image: *configSyncImage
             env:
-              - { name: FOLDER, value: /config }
-              - { name: LABEL, value: gatus.io/enabled }
-              - { name: NAMESPACE, value: ALL }
-              - { name: RESOURCE, value: both }
-              - { name: UNIQUE_FILENAMES, value: "true" }
-              - { name: METHOD, value: WATCH }
-            volumeMounts:
-              - { name: config, mountPath: /config }
-            resources:
-              requests:
-                cpu: 10m
-                memory: 10M
-              limits:
-                memory: 128M
+              FOLDER: /config
+              LABEL: gatus.io/enabled
+              NAMESPACE: ALL
+              RESOURCE: both
+              UNIQUE_FILENAMES: true
+              METHOD: WATCH
+            resources: *configSyncResources
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       main:
         ports:
           http:
-            port: 8080
+            port: *port
     serviceMonitor:
       main:
         enabled: true
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
     ingress:
       main:
         enabled: true
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          cert-manager.io/cluster-issuer: gts-production
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-#          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
-#          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
-          nginx.ingress.kubernetes.io/auth-url: https://sso.${SECRET_DOMAIN}/outpost.goauthentik.io/auth/nginx
-          nginx.ingress.kubernetes.io/auth-signin: /outpost.goauthentik.io/start?rd=$escaped_request_uri
-          nginx.ingress.kubernetes.io/auth-response-headers: Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
-          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Host $http_host;
         hosts:
           - host: &host status.${SECRET_DOMAIN}
             paths:
@@ -140,13 +120,11 @@ spec:
     serviceAccount:
       create: true
       name: gatus
-
     persistence:
       config:
         enabled: true
         type: emptyDir
       config-file:
-        enabled: true
         type: configMap
         name: gatus-configmap
         globalMounts:
