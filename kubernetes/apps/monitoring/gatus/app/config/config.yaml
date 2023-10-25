@@ -9,7 +9,7 @@ metrics: true
 debug: false
 security:
   oidc:
-    issuer-url: "https://sso.${SECRET_DOMAIN}"
+    issuer-url: "https://sso.${SECRET_DOMAIN}/application/o/gatus/"
     redirect-url: "https://status.${SECRET_DOMAIN}/authorization-code/callback"
     client-id: "TcKuo0hztS5WBlOSj5AB3HDCeFCO2eiAMAT1kdcX"
     client-secret: ${CUSTOM_GATUS_OAUTH_SECRET}
