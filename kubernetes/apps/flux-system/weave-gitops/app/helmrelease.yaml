@@ -25,10 +25,10 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    adminUser:
-      create: true
-      createSecret: false
-      username: admin
+    # adminUser:
+      # create: true
+      # createSecret: false
+      # username: admin
     oidcSecret:
       create: false
     ingress:
