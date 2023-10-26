@@ -63,7 +63,7 @@ spec:
               RADARR__INSTANCE_NAME: Radarr
               RADARR__PORT: &port 80
               RADARR__LOG_LEVEL: info
-              RADARR__AUTHENTICATION_METHOD: External
+              RADARR__AUTHENTICATION_METHOD: Basic
               RADARR__THEME: dark
             envFrom: *envFrom
             securityContext:
@@ -136,25 +136,25 @@ spec:
           http:
             port: *port
 
-    ingress:
-      main:
-        enabled: true
-        className: "internal"
-        annotations:
-          cert-manager.io/cluster-issuer: gts-production
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  name: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: radarr-cert
+    # ingress:
+      # main:
+        # enabled: true
+        # className: "internal"
+        # annotations:
+          # cert-manager.io/cluster-issuer: gts-production
+          # cert-manager.io/private-key-algorithm: ECDSA
+          # cert-manager.io/private-key-size: "384"
+        # hosts:
+          # - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            # paths:
+              # - path: /
+                # service:
+                  # name: main
+                  # port: http
+        # tls:
+          # - hosts:
+              # - *host
+            # secretName: radarr-cert
     persistence:
       config:
         enabled: true
