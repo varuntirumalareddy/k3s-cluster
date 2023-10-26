@@ -29,6 +29,12 @@ spec:
       create: true
       createSecret: false
       username: admin
+    oidcSecret:
+      create: false
+      # clientID:
+      # clientSecret:
+      # issuerURL:
+      # redirectURL:
     ingress:
       enabled: true
       className: internal
