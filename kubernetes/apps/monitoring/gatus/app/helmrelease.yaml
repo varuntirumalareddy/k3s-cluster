@@ -100,26 +100,26 @@ spec:
     serviceMonitor:
       main:
         enabled: true
-    ingress:
-      main:
-        enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          cert-manager.io/cluster-issuer: gts-production
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-        hosts:
-          - host: &host status.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  name: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: gatus-cert
+    # ingress:
+      # main:
+        # enabled: true
+        # className: external
+        # annotations:
+          # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+          # cert-manager.io/cluster-issuer: gts-production
+          # cert-manager.io/private-key-algorithm: ECDSA
+          # cert-manager.io/private-key-size: "384"
+        # hosts:
+          # - host: &host status.${SECRET_DOMAIN}
+            # paths:
+              # - path: /
+                # service:
+                  # name: main
+                  # port: http
+        # tls:
+          # - hosts:
+              # - *host
+            # secretName: gatus-cert
     serviceAccount:
       create: true
       name: gatus
