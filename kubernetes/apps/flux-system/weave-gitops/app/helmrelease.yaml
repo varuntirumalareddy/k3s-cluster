@@ -29,11 +29,6 @@ spec:
       create: true
       createSecret: false
       username: admin
-    # oidc:
-    #   enabled: true
-    #   issuerURL: https://sso.${SECRET_DOMAIN}/application/o/gitops/
-    #   redirectURL: https://gitops.${SECRET_DOMAIN}/oauth2/callback
-    #   clientCredentialsSecret: cluster-user-auth
     oidcSecret:
       create: false
     ingress:
@@ -58,6 +53,6 @@ spec:
       enabled: true
     rbac:
       create: true
-      impersonationResourceNames: ["admin"]
+      # impersonationResourceNames: ["admin"]
     podAnnotations:
       secret.reloader.stakater.com/reload: cluster-user-auth
