@@ -33,6 +33,7 @@ spec:
       enabled: true
       issuerURL: https://sso.${SECRET_DOMAIN}/application/o/gitops/
       redirectURL: https://gitops.${SECRET_DOMAIN}/oauth2/callback
+      clientCredentialsSecret: cluster-user-auth
     ingress:
       enabled: true
       className: internal
