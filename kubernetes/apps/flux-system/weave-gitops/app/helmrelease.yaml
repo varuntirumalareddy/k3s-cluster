@@ -34,7 +34,8 @@ spec:
     #   issuerURL: https://sso.${SECRET_DOMAIN}/application/o/gitops/
     #   redirectURL: https://gitops.${SECRET_DOMAIN}/oauth2/callback
     #   clientCredentialsSecret: cluster-user-auth
-    oidcSecret: cluster-user-auth
+    oidcSecret:
+      create: false
     ingress:
       enabled: true
       className: internal
