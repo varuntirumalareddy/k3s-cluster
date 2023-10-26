@@ -29,11 +29,12 @@ spec:
       create: true
       createSecret: false
       username: admin
-    oidc:
-      enabled: true
-      issuerURL: https://sso.${SECRET_DOMAIN}/application/o/gitops/
-      redirectURL: https://gitops.${SECRET_DOMAIN}/oauth2/callback
-      clientCredentialsSecret: cluster-user-auth
+    # oidc:
+    #   enabled: true
+    #   issuerURL: https://sso.${SECRET_DOMAIN}/application/o/gitops/
+    #   redirectURL: https://gitops.${SECRET_DOMAIN}/oauth2/callback
+    #   clientCredentialsSecret: cluster-user-auth
+    oidcSecret: cluster-user-auth
     ingress:
       enabled: true
       className: internal
