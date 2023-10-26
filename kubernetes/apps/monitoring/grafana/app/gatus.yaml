@@ -11,10 +11,10 @@ data:
     endpoints:
       - name: grafana
         group: external
-        url: http://grafana.monitoring.svc.cluster.local/api/health
+        url: https://grafana.${SECRET_DOMAIN}/api/health
         interval: 1m
         client:
-          dns-resolver: tcp://10.43.0.10:53
+          dns-resolver: tcp://1.1.1.1:53
         ui:
           hide-hostname: true
           hide-url: true
