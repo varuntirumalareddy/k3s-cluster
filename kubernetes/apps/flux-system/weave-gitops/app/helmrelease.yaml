@@ -29,12 +29,10 @@ spec:
       create: true
       createSecret: false
       username: admin
-    oidcSecret:
-      create: false
-      # clientID:
-      # clientSecret:
-      # issuerURL:
-      # redirectURL:
+    oidc:
+      enabled: true
+      issuerURL: https://sso.${SECRET_DOMAIN}/application/o/gitops/
+      redirectURL: https://gitops.${SECRET_DOMAIN}/oauth2/callback
     ingress:
       enabled: true
       className: internal
