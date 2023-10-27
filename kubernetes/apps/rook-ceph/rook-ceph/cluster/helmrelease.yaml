@@ -30,22 +30,22 @@ spec:
     monitoring:
       enabled: true
       createPrometheusRules: true
-    ingress:
-      dashboard:
-        ingressClassName: internal
-        annotations:
-          cert-manager.io/cluster-issuer: gts-production
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-          nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
-        host:
-          name: &host rook.${SECRET_DOMAIN}
-          path: /
-        tls:
-          - hosts:
-              - *host
-            secretName: rook-dashboard-cert
+    # ingress:
+      # dashboard:
+        # ingressClassName: internal
+        # annotations:
+          # cert-manager.io/cluster-issuer: gts-production
+          # cert-manager.io/private-key-algorithm: ECDSA
+          # cert-manager.io/private-key-size: "384"
+          # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
+          # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
+        # host:
+          # name: &host rook.${SECRET_DOMAIN}
+          # path: /
+        # tls:
+          # - hosts:
+              # - *host
+            # secretName: rook-dashboard-cert
     toolbox:
       enabled: true
     configOverride: |
