@@ -76,21 +76,21 @@ spec:
       ui:
         enabled: true
         rollOutPods: true
-        ingress:
-          enabled: true
-          className: internal
-          annotations:
-            cert-manager.io/cluster-issuer: gts-production
-            cert-manager.io/private-key-algorithm: ECDSA
-            cert-manager.io/private-key-size: "384"
-            nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
-            nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
-          hosts:
-            - &host "hubble.${SECRET_DOMAIN}"
-          tls:
-            - hosts:
-                - *host
-              secretName: hubble-cert
+        # ingress:
+          # enabled: true
+          # className: internal
+          # annotations:
+            # cert-manager.io/cluster-issuer: gts-production
+            # cert-manager.io/private-key-algorithm: ECDSA
+            # cert-manager.io/private-key-size: "384"
+            # nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
+            # nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}
+          # hosts:
+            # - &host "hubble.${SECRET_DOMAIN}"
+          # tls:
+            # - hosts:
+                # - *host
+              # secretName: hubble-cert
     ipam:
       mode: kubernetes
     ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
