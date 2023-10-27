@@ -26,11 +26,35 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    dcgm:
+      enabled: false
+    dcgmExporter:
+      enabled: false
+    gds:
+      enabled: false
+    nodeStatusExporter:
+      enabled: false
+    ccManager:
+      enabled: false
+    sandboxDevicePlugin:
+      enabled: false
+    kataManager:
+      enabled: false
+    vfioManager:
+      enabled: false
+    vgpuDeviceManager:
+      enabled: false
+    vgpuManager:
+      enabled: false
+    migManager:
+      enabled: false
+    toolkit:
+      enabled: true
+    gfd:
+      enabled: true
     nfd:
       enabled: true
     driver:
-      enabled: true
-    toolkit:
       enabled: true
       env:
         - name: CONTAINERD_CONFIG
