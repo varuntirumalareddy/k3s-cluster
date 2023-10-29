@@ -40,10 +40,10 @@ spec:
           secret.reloader.stakater.com/reload: autobrr-secret
         pod:
           securityContext:
-            runAsUser: 568
-            runAsGroup: 568
             fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65542 # gladius:external-services
         initContainers:
           01-init-db:
             image:
