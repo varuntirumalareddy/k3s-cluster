@@ -34,15 +34,16 @@ spec:
     controllers:
       main:
         annotations:
-          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: sonarr-dnsdist, sonarr-resolv, sonarr-configmap
+          secret.reloader.stakater.com/reload: sonarr-secret
         pod:
           securityContext:
-            fsGroup: 100
-            supplementalGroups:
-              - 34
-              - 100
-              - 10000
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65542 # gladius:external-services
         initContainers:
           01-init-db:
             image:
@@ -66,9 +67,12 @@ spec:
               SONARR__AUTHENTICATION_METHOD: Basic
               SONARR__THEME: dark
             envFrom: *envFrom
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 100
+            resources:
+              requests:
+                cpu: 20m
+                memory: 512M
+              limits:
+                memory: 768M
 
           gluetun:
             image:
@@ -197,9 +201,3 @@ spec:
             port-forward:
               - path: /tmp/gluetun
                 readOnly: true
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2000Mi

@@ -30,19 +30,20 @@ spec:
   dependsOn:
     - name: volsync
       namespace: volsync
+    - name: qbittorrent
+      namespace: downloads
   values:
     controllers:
       main:
         annotations:
-          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: autobrr-dnsdist, autobrr-configmap, autobrr-resolv
+          secret.reloader.stakater.com/reload: autobrr-secret
         pod:
           securityContext:
-            fsGroup: 100
-            supplementalGroups:
-              - 34
-              - 100
-              - 10000
-            fsGroupChangePolicy: "OnRootMismatch"
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
         initContainers:
           01-init-db:
             image:
@@ -62,9 +63,12 @@ spec:
               AUTOBRR__PORT: &port 80
               AUTOBRR__LOGLEVEL: DEBUG
             envFrom: *envFrom
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 100
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
 
           gluetun:
             image:
@@ -192,9 +196,3 @@ spec:
           - path: /config/config.toml
             subPath: config.toml
             readOnly: true
-    resources:
-      requests:
-        memory: 250Mi
-        cpu: 10m
-      limits:
-        memory: 500Mi

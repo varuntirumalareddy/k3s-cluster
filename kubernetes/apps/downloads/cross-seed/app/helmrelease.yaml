@@ -37,12 +37,12 @@ spec:
           secret.reloader.stakater.com/reload: cross-seed-secret
         pod:
           securityContext:
-            fsGroup: 100
-            supplementalGroups:
-              - 34
-              - 100
-              - 10000
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65542 # gladius:external-services
         containers:
           main:
             image:
@@ -52,9 +52,12 @@ spec:
             env:
               TZ: America/New_York
             args: ["daemon"]
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 100
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
     service:
       main:
         ports:
@@ -76,9 +79,3 @@ spec:
       media:
         enabled: true
         existingClaim: media
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 1000Mi

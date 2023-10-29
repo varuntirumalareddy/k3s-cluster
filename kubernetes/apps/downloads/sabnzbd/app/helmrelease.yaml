@@ -37,15 +37,16 @@ spec:
       main:
         type: statefulset
         annotations:
-          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: sabnzbd-dnsdist, sabnzbd-resolv
+          secret.reloader.stakater.com/reload: sabnzbd-secret
         pod:
           securityContext:
-            fsGroup: 100
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
             supplementalGroups:
-              - 34
-              - 100
-              - 10000
-            fsGroupChangePolicy: "OnRootMismatch"
+              - 65542 # gladius:external-services
         containers:
           main:
             image:
@@ -64,6 +65,12 @@ spec:
             envFrom:
               - secretRef:
                   name: sabnzbd-secret
+            resources:
+              requests:
+                cpu: 5m
+                memory: "1024M"
+              limits:
+                memory: "4096M"
           gluetun:
             image:
               repository: docker.io/qmcgaw/gluetun
@@ -186,9 +193,3 @@ spec:
             port-forward:
               - path: /tmp/gluetun
                 readOnly: true
-    resources:
-      requests:
-        cpu: 49m
-        memory: 1024Mi
-      limits:
-        memory: 8192Mi

@@ -36,15 +36,14 @@ spec:
     controllers:
       main:
         annotations:
-          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: qbittorrent-dnsdist, qbittorrent-scripts, qbittorrent-resolv
+          secret.reloader.stakater.com/reload: qbittorrent-secret
         pod:
           securityContext:
-            fsGroup: 100
-            supplementalGroups:
-              - 34
-              - 100
-              - 10000
+            fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65542 # gladius:external-services
         containers:
           main:
             image:
@@ -69,9 +68,15 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: qbittorrent-secret
+            resources:
+              requests:
+                cpu: 49m
+                memory: 1024Mi
+              limits:
+                memory: 8192Mi
             securityContext:
               runAsUser: 568
-              runAsGroup: 100
+              runAsGroup: 568
 
           gluetun:
             image:
@@ -226,9 +231,3 @@ spec:
             port-forward:
               - path: /tmp/gluetun
                 readOnly: true
-    resources:
-      requests:
-        cpu: 49m
-        memory: 1024Mi
-      limits:
-        memory: 8192Mi
