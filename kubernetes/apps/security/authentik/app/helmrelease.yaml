@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: authentik
-      version: 2023.10.1
+      version: 2023.10.2
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -19,10 +19,6 @@ spec:
   values:
     annotations:
       secret.reloader.stakater.com/reload: authentik-secret
-    image:
-      repository: thegrandpkizzle/authentik
-      tag: 2023.10.1-0de9b71
-      pullPolicy: IfNotPresent
     global:
       storageClass: ceph-block
     initContainers:
@@ -38,6 +34,9 @@ spec:
       error_reporting:
         enabled: false
         send_pii: false
+      redis:
+        host: "authentik-redis.security.svc.cluster.local"
+        password: ""
     envFrom: *envFrom
 
     ingress:

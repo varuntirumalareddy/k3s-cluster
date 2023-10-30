@@ -3,6 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: cluster-apps-authentik-redis
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: "./kubernetes/apps/security/authentik/redis"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-ops-kubernetes
+  wait: true
+  dependsOn:
+    - name: cluster-apps-external-secrets-stores
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: cluster-apps-authentik
   namespace: flux-system
 spec:
@@ -15,5 +32,5 @@ spec:
   wait: true
   dependsOn:
     - name: cluster-apps-external-secrets-stores
-    - name: cluster-apps-redis
     - name: cluster-apps-cloudnative-pg-cluster
+    - name: cluster-apps-authentik-redis
