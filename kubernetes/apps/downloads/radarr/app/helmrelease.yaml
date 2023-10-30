@@ -62,7 +62,7 @@ spec:
               RADARR__INSTANCE_NAME: Radarr
               RADARR__PORT: &port 80
               RADARR__LOG_LEVEL: info
-              RADARR__AUTHENTICATION_METHOD: Basic
+              RADARR__AUTHENTICATION_METHOD: External
               RADARR__THEME: dark
             envFrom: *envFrom
             resources:
