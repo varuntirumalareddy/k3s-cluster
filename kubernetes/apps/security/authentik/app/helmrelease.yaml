@@ -28,7 +28,7 @@ spec:
         envFrom: &envFrom
           - secretRef:
               name: authentik-secret
-    replicas: 2
+    replicas: 3
     authentik:
       log_level: info
       error_reporting:
