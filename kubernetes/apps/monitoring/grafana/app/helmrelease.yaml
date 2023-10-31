@@ -145,13 +145,6 @@ spec:
           - { name: Alertmanager, orgId: 1 }
           - { name: Loki, orgId: 1 }
           - { name: Prometheus, orgId: 1 }
-    datasources:
-      datasources.yaml:
-        apiVersion: 1
-        deleteDatasources:
-          - { name: Alertmanager, orgId: 1 }
-          - { name: Loki, orgId: 1 }
-          - { name: Prometheus, orgId: 1 }
         datasources:
           - name: Prometheus
             type: prometheus
