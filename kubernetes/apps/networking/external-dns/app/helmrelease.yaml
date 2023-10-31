@@ -34,7 +34,8 @@ spec:
             name: external-dns-secret
             key: api-token
     extraArgs:
-      - --ingress-class=internal
+      # - --ingress-class=internal
+      - --annotation-filter=external-dns.alpha.kubernetes.io/enabled in (true)
       - --cloudflare-proxied
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
