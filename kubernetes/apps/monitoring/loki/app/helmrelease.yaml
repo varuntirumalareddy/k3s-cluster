@@ -27,8 +27,6 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: local-path-provisioner
-      namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
@@ -108,8 +106,20 @@ spec:
           reporting_enabled: false
     gateway:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.gatewaySelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
+      enabled: true
       image:
         registry: ghcr.io
+        repository: nginxinc/nginx-unprivileged
+        tag: 1.25-alpine
       ingress:
         enabled: true
         ingressClassName: internal
