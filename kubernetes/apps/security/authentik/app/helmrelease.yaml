@@ -41,7 +41,7 @@ spec:
 
     ingress:
       enabled: true
-      ingressClassName: external
+      ingressClassName: internal
       annotations:
         external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
         cert-manager.io/cluster-issuer: gts-production
