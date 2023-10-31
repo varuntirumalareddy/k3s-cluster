@@ -37,6 +37,8 @@ spec:
           log_level: info
           http_listen_port: 3100
           grpc_listen_port: 9095
+          grpc_server_max_recv_msg_size: 8388608
+          grpc_server_max_send_msg_size: 8388608
         memberlist:
           join_members: ["loki-memberlist"]
         limits_config:
@@ -139,12 +141,24 @@ spec:
       #       proxy_set_header X-Forwarded-Host $http_host;
         hosts:
           - host: &host loki.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
         tls:
           - hosts:
               - *host
             secretName: loki-cert
     read:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.readSelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       persistence:
         storageClass: ceph-block
       extraVolumeMounts:
@@ -155,10 +169,29 @@ spec:
           emptyDir: {}
     write:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.writeSelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       persistence:
         storageClass: ceph-block
+
     backend:
       replicas: 2
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "loki.backendSelectorLabels" . | nindent 12 }}
+                topologyKey: kubernetes.io/hostname
       persistence:
         storageClass: ceph-block
       extraVolumeMounts:
