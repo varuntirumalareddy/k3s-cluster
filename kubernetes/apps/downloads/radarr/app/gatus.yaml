@@ -10,16 +10,15 @@ data:
   config.yaml: |
     endpoints:
       - name: radarr
-        group: guarded
-        url: 1.1.1.1
+        group: external
+        url: https://radarr.${SECRET_DOMAIN}
         interval: 1m
+        client:
+          dns-resolver: tcp://1.1.1.1:53
         ui:
           hide-hostname: true
           hide-url: true
-        dns:
-          query-name: radarr.${SECRET_DOMAIN}
-          query-type: A
         conditions:
-          - "len([BODY]) == 0"
+          - "[STATUS] == 200"
         alerts:
           - type: pushover
