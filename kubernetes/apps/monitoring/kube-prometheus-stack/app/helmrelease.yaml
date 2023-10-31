@@ -44,7 +44,7 @@ spec:
          cert-manager.io/cluster-issuer: gts-production
          cert-manager.io/private-key-algorithm: ECDSA
          cert-manager.io/private-key-size: "384"
-         external-dns.home.arpa/enabled: "true
+         external-dns.home.arpa/enabled: "true"
          nginx.ingress.kubernetes.io/affinity: cookie
          nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
          nginx.ingress.kubernetes.io/proxy-buffers-number: "4"

@@ -5,7 +5,7 @@ metadata:
   name: flux-webhook
   namespace: flux-system
   annotations:
-    external-dns.home.arpa/enabled: "true
+    external-dns.home.arpa/enabled: "true"
     cert-manager.io/cluster-issuer: gts-production
     cert-manager.io/private-key-algorithm: ECDSA
     cert-manager.io/private-key-size: "384"
