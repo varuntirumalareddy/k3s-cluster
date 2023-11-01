@@ -9,6 +9,7 @@ spec:
   chart:
     spec:
       chart: awx-operator
+      version: v2.7.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
