@@ -26,4 +26,4 @@ spec:
   tls:
     - hosts:
       - *host
-      secretName: connect-cert
+      secretName: connect-ec-cert
