@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - awx.yaml
   - ingress.yaml
-  - gatus.yaml
+#  - gatus.yaml
 
 # Specify a custom namespace in which to install AWX
 namespace: awx
