@@ -5,7 +5,7 @@ metadata:
   name: awx
 
 spec:
-  auto_upgrade: true
+  #auto_upgrade: true
   task_privileged: true
   web_replicas: 2
   task_replicas: 2
