@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   # 6a: Change this to your user and repo names
-  url: ssh://git@github.com/varuntirumala1/k3s-cluster
+  url: ssh://git@github.com/varuntirumalareddy/k3s-cluster
   ref:
     branch: main
   secretRef:
