@@ -44,8 +44,8 @@ spec:
     storageClassName: ceph-filesystem
     moverSecurityContext:
       runAsUser: 568
-      runAsGroup: 100
-      fsGroup: 100
+      runAsGroup: 568
+      fsGroup: 568
     retain:
       daily: 7
       within: 3d
