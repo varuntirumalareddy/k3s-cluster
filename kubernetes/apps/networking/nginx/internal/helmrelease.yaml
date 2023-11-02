@@ -28,7 +28,7 @@ spec:
   values:
     fullnameOverride: nginx-internal
     controller:
-      replicaCount: 2
+      replicaCount: 3
 
       updateStrategy:
         type: RollingUpdate
@@ -97,7 +97,7 @@ spec:
         default-ssl-certificate: "networking/gts-production-tls-ec"
 
       topologySpreadConstraints:
-        - maxSkew: 1
+        - maxSkew: 2
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
