@@ -19,18 +19,21 @@ spec:
   values:
     controllers:
       main:
-        replicas: 4
+        replicas: 3
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
           topologySpreadConstraints:
-            - maxSkew: 1
+            - maxSkew: 2
               topologyKey: kubernetes.io/hostname
               whenUnsatisfiable: DoNotSchedule
               labelSelector:
                 matchLabels:
-                  app.kubernetes.io/name: cloudflared
+                  app.kubernetes.io/name: *app
 
         containers:
           main:
@@ -41,8 +44,8 @@ spec:
               NO_AUTOUPDATE: "true"
               TUNNEL_CRED_FILE: /etc/cloudflared/creds/credentials.json
               TUNNEL_METRICS: 0.0.0.0:8080
-              TUNNEL_TRANSPORT_PROTOCOL: quic
-              TUNNEL_POST_QUANTUM: true
+              TUNNEL_TRANSPORT_PROTOCOL: auto
+              #TUNNEL_POST_QUANTUM: true
               TUNNEL_ID:
                 valueFrom:
                   secretKeyRef:
@@ -88,10 +91,10 @@ spec:
                   periodSeconds: 10
             resources:
               requests:
-                cpu: 6m
-                memory: 105Mi
+                cpu: 7m
+                memory: 192Mi
               limits:
-                memory: 105Mi
+                memory: 256Mi
     service:
       main:
         ports:
