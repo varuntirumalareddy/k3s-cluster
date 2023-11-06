@@ -45,20 +45,14 @@ spec:
         pod:
           enableServiceLinks: false
           nodeSelector:
-            #intel.feature.node.kubernetes.io/gpu: "true"
             nvidia.com/gpu.present: "true"
           runtimeClassName: nvidia
           securityContext:
             runAsUser: 568
-            runAsGroup: 100
-            fsGroup: 100
-            fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups:
-              - 44
-              - 109
-              - 100
-              - 10000
-              - 65539
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [44, 105, 10000]
 
         containers:
           main:
