@@ -8,14 +8,14 @@ metadata:
   annotations:
     kyverno.io/ignore: "true"
 spec:
-  instances: 1
+  instances: 7
   imageName: ghcr.io/cloudnative-pg/postgresql:14.9-3
   inheritedMetadata:
     labels:
       kube-image-keeper.enix.io/image-caching-policy: ignore
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 50Gi
+    size: 100Gi
     storageClass: ceph-block
   superuserSecret:
     name: cloudnative-pg-secret
@@ -33,7 +33,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://cnpg-pwu1kph/
       endpointURL: https://${SECRET_CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
-      serverName: &currentCluster postgres-v6
+      serverName: &currentCluster postgres-v7
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -44,7 +44,7 @@ spec:
 # use only if you have cluster already backed up in cloudflare R2; leave commented to bootstrap an empty cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres-v5
+      source: &previousCluster postgres-v6
  # Note: externalClusters is needed when recovering from an existing cnpg cluster; uncomment below when restoring along with the bootstrap section not needed for new cluster
   externalClusters:
     - name: *previousCluster
