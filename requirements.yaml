@@ -11,5 +11,6 @@ collections:
   - name: kubernetes.core
     version: 2.4.0
 roles:
+    # renovate: datasource=github-releases depName=PyratLabs/ansible-role-k3s
   - name: xanmanning.k3s
     version: v3.4.2
