@@ -40,7 +40,7 @@ spec:
     repository: sabnzbd-restic-secret
     cacheCapacity: 8Gi
     cacheStorageClassName: local-hostpath
-    volumeSnapshotClassName: csi-ceph-blockpool
+    volumeSnapshotClassName: csi-ceph-filesystem
     storageClassName: ceph-filesystem
     moverSecurityContext:
       runAsUser: 568
