@@ -1,0 +1,41 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-one-password
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: "./kubernetes/apps/one-password/one-password/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  wait: true
+  dependsOn:
+    - name: cluster-apps-reloader
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-op-credentials
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: "./kubernetes/apps/one-password/one-password/creds"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  wait: true
+  dependsOn:
+    - name: cluster-apps-one-password

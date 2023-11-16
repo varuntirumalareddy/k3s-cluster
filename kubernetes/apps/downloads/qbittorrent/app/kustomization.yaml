@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: downloads
+resources:
+  - ./pvc.yaml
+  - ./helmrelease.yaml
+  - ./volsync.yaml
+  - ./gatus.yaml
+  - ./externalsecret.yaml
+configMapGenerator:
+  - name: qbittorrent-scripts
+    files:
+      - ./scripts/completed.sh
+  - name: qbittorrent-dnsdist
+    files:
+      - ./config/dnsdist.conf
+  - name: qbittorrent-resolv
+    files:
+      - ./config/resolv.conf
+generatorOptions:
+  disableNameSuffixHash: true
+commonLabels:
+  app.kubernetes.io/name: qbittorrent
+  app.kubernetes.io/instance: qbittorrent
+  app.kubernetes.io/component: app

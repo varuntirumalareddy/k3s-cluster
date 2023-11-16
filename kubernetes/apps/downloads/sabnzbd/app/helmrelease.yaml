@@ -1,0 +1,202 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: sabnzbd
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.2.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
+  values:
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          configmap.reloader.stakater.com/reload: sabnzbd-dnsdist, sabnzbd-resolv
+          secret.reloader.stakater.com/reload: sabnzbd-secret
+        pod:
+          securityContext:
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 65542 # gladius:external-services
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/sabnzbd
+              tag: 4.1.0@sha256:91f3cd6b9f1c9988af5447f464b299630706eb7f691dee857eab1487d4bb626e
+            env:
+              TZ: America/New_York
+              SABNZBD__PORT: &port 80
+              SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                sabnzbd,
+                sabnzbd.downloads,
+                sabnzbd.downloads.svc,
+                sabnzbd.downloads.svc.cluster,
+                sabnzbd.downloads.svc.cluster.local,
+                sabnzbd.${SECRET_DOMAIN}
+            envFrom:
+              - secretRef:
+                  name: sabnzbd-secret
+            resources:
+              requests:
+                cpu: 5m
+                memory: "1024M"
+              limits:
+                memory: "4096M"
+          gluetun:
+            image:
+              repository: docker.io/qmcgaw/gluetun
+              tag: latest@sha256:35b51b134e11307ea0383a516f2bb077b94bb3e3f9cf4449ea902245fe49b1b0
+            securityContext:
+              privileged: true
+            networkPolicy:
+              enabled: false
+            env:
+              - name: VPN_INTERFACE
+                value: wg0
+              - name: VPN_ENDPOINT_PORT
+                value: "51820"
+              - name: FIREWALL_INPUT_PORTS
+                value: "80"
+              - name: FIREWALL_OUTBOUND_SUBNETS
+                # Allow access to k8s subnets
+                value: "10.42.0.0/16,10.43.0.0/16"
+              - name: SHADOWSOCKS
+                value: "on"
+              - name: DOT
+                value: "off"
+              - name: DNS_SERVER
+                value: "127.0.0.2"
+              - name: WIREGUARD_PRIVATE_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: WIREGUARD_PRIVATE_KEY
+              - name: WIREGUARD_PUBLIC_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: WIREGUARD_PUBLIC_KEY
+              - name: WIREGUARD_ADDRESSES
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: WIREGUARD_ADDRESSES
+              - name: VPN_SERVICE_PROVIDER
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: VPN_SERVICE_PROVIDER
+              - name: VPN_TYPE
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: VPN_TYPE
+              - name: VPN_ENDPOINT_IP
+                valueFrom:
+                  secretKeyRef:
+                    name: sabnzbd-secret
+                    key: VPN_ENDPOINT_IP
+
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-18
+              tag: 1.8.2@sha256:06584eb44627c46b3718ee754c36a81acf66fdf423b162cae9ecfa69bb362c9e
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        annotations:
+          cert-manager.io/cluster-issuer: gts-production
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          nginx.ingress.kubernetes.io/affinity: cookie
+          nginx.ingress.kubernetes.io/affinity-node: persistent
+          nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+          nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+          nginx.ingress.kubernetes.io/auth-url: |-
+              http://ak-outpost-authentik-embedded-outpost.security.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
+          nginx.ingress.kubernetes.io/auth-signin: /outpost.goauthentik.io/start?rd=$escaped_request_uri
+          nginx.ingress.kubernetes.io/auth-response-headers: |-
+              Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
+          nginx.ingress.kubernetes.io/auth-snippet: |
+              proxy_set_header X-Forwarded-Host $http_host;
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: sabnzbd-cert
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: sabnzbd-config
+      media:
+        enabled: true
+        existingClaim: media
+      dnsdist-config:
+        type: configMap
+        name: sabnzbd-dnsdist
+        advancedMounts:
+          main:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
+                readOnly: true
+      sabnzbd-resolv-config:
+        type: configMap
+        name: sabnzbd-resolv
+        advancedMounts:
+          main:
+            main:
+              - path: /etc/resolv.conf
+                subPath: resolv.conf
+                readOnly: true
+      gluetun-data:
+        type: emptyDir
+        advancedMounts:
+          main:
+            gluetun:
+              - path: /tmp/gluetun
+            port-forward:
+              - path: /tmp/gluetun
+                readOnly: true

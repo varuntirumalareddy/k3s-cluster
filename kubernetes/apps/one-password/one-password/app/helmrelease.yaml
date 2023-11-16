@@ -1,0 +1,94 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: connect
+  namespace: one-password
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: connect
+      sourceRef:
+        kind: HelmRepository
+        name: onepassword
+        namespace: flux-system
+      interval: 5m
+  valuesFrom:
+    - kind: Secret
+      name: 1password-credentials
+      valuesKey: 1password-credentials
+      targetPath: connect.credentials
+    - kind: Secret
+      name: 1password-credentials
+      valuesKey: token
+      targetPath: operator.token.value
+  values:
+    connect:
+      create: true
+      annotations:
+        secret.reloader.stakater.com/reload: "op-credentials"
+      replicas: 1
+      api:
+        name: connect-api
+        # The 1Password Connect API repository
+        imageRepository: 1password/connect-api
+        resources: {}
+        httpPort: 8080
+        httpsPort: 8443
+        logLevel: info
+        # Prometheus Service Monitor
+        # ref: https://github.com/coreos/prometheus-operator
+        #
+        serviceMonitor:
+          # Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
+          #
+          enabled: true
+          # Specify the interval at which metrics should be scraped
+          #
+          interval: 30s
+          # Define the path used by ServiceMonitor to scrape metrics
+          #
+          path: "/metrics"
+          # Define the HTTP URL parameters used by ServiceMonitor
+          #
+          params: {}
+          # Extra annotations for the ServiceMonitor
+          #
+          annotations: {}
+    
+      # The 1Password Connect Sync Specific Values
+      sync:
+        name: connect-sync
+        imageRepository: 1password/connect-sync
+        resources: {}
+        httpPort: 8081
+        logLevel: info
+    
+      # The name of 1Password Connect Application
+      applicationName: onepassword-connect
+    
+      # The name of 1Password Connect Host
+      host: onepassword-connect
+    
+      serviceType: ClusterIP
+    
+      # Additional annotations to be added to the service resource
+      serviceAnnotations: {}
+    
+      imagePullPolicy: IfNotPresent
+
+      ingress:
+        enabled: false
+
+      profiler:
+        enabled: false
+        # The interval at which profiler snapshots are taken.
+        interval: 6h
+        # Number of profiler snapshots to keep.
+        keepLast: 12
+    
+    # This section of values is for 1Password Operator Configuration
+    operator:
+      # Denotes whether the 1Password Operator will be deployed
+      create: false

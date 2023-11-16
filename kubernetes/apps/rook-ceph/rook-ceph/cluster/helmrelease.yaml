@@ -1,0 +1,170 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+  namespace: rook-ceph
+spec:
+  interval: 30m
+  timeout: 15m
+  chart:
+    spec:
+      chart: rook-ceph-cluster
+      version: v1.12.7
+      sourceRef:
+        kind: HelmRepository
+        name: rook-ceph
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    monitoring:
+      enabled: true
+      createPrometheusRules: true
+    ingress:
+      dashboard:
+        ingressClassName: internal
+        annotations:
+          cert-manager.io/cluster-issuer: gts-production
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          nginx.ingress.kubernetes.io/affinity: cookie
+          nginx.ingress.kubernetes.io/affinity-node: persistent
+          nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+          nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+          nginx.ingress.kubernetes.io/auth-url: |-
+              http://ak-outpost-authentik-embedded-outpost.security.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
+          nginx.ingress.kubernetes.io/auth-signin: /outpost.goauthentik.io/start?rd=$escaped_request_uri
+          nginx.ingress.kubernetes.io/auth-response-headers: |-
+              Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
+          nginx.ingress.kubernetes.io/auth-snippet: |
+              proxy_set_header X-Forwarded-Host $http_host;
+        host:
+          name: &host rook.${SECRET_DOMAIN}
+          path: /
+        tls:
+          - hosts:
+              - *host
+            secretName: rook-dashboard-cert
+    toolbox:
+      enabled: true
+    configOverride: |
+      [global]
+      bdev_enable_discard = true
+      bdev_async_discard = true
+      osd_class_update_on_start = false
+    cephClusterSpec:
+      network:
+        provider: host
+        connections:
+          compression:
+            enabled: true
+          requireMsgr2: true
+      crashCollector:
+        disable: false
+      dashboard:
+        enabled: true
+        urlPrefix: /
+        ssl: false
+      storage:
+        useAllNodes: true
+        useAllDevices: true
+        config:
+          osdsPerDevice: "1"
+    cephBlockPools:
+      - name: ceph-blockpool
+        spec:
+          failureDomain: host
+          replicated:
+            size: 4
+        storageClass:
+          enabled: true
+          name: ceph-block
+          isDefault: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          parameters:
+            imageFormat: "2"
+            imageFeatures: layering
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/fstype: ext4
+    cephFileSystems:
+      - name: ceph-filesystem
+        spec:
+          metadataPool:
+            replicated:
+              size: 4
+          dataPools:
+            - failureDomain: host
+              replicated:
+                size: 4
+              name: data0
+          metadataServer:
+            activeCount: 1
+            activeStandby: true
+            resources:
+              requests:
+                cpu: 1000m
+                memory: 4Gi
+              limits:
+                memory: 4Gi
+        storageClass:
+          enabled: true
+          isDefault: false
+          name: ceph-filesystem
+          pool: data0
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          parameters:
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/fstype: ext4
+    cephObjectStores:
+      - name: ceph-objectstore
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 4
+          dataPool:
+            failureDomain: host
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 2
+          preservePoolsOnDelete: true
+          gateway:
+            port: 80
+            resources:
+              requests:
+                cpu: 1000m
+                memory: 1Gi
+              limits:
+                memory: 2Gi
+            instances: 2
+          healthCheck:
+            bucket:
+              interval: 60s
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+          parameters:
+            region: us-east-1

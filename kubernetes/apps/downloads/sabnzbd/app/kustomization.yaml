@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: downloads
+resources:
+  - ./externalsecret.yaml
+  - ./helmrelease.yaml
+  - ./volsync.yaml
+  - ./gatus.yaml
+  - ./pvc.yaml
+configMapGenerator:
+  - name: sabnzbd-dnsdist
+    files:
+      - ./config/dnsdist.conf
+  - name: sabnzbd-resolv
+    files:
+      - ./config/resolv.conf
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
