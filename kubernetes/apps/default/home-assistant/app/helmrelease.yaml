@@ -68,6 +68,13 @@ spec:
               limits:
                 memory: 1Gi
         pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name":"multus-iot",
+                "namespace": "networking",
+                "ips": ["192.168.123.10/22"]
+              }]
           securityContext:
             runAsUser: 568
             runAsGroup: 568
