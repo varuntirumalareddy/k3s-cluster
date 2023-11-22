@@ -10,7 +10,6 @@ resources:
   - ./grafana.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
-  - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
   - ./metrics-server.yaml
   - ./prometheus-community.yaml
@@ -30,3 +29,4 @@ resources:
   - ./cloudnative-pg.yaml
   - ./external-secrets.yaml
   - ./authentik.yaml
+  - ./angelnu.yaml
