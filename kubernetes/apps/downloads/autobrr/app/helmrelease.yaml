@@ -94,6 +94,8 @@ spec:
                 value: "off"
               - name: DNS_SERVER
                 value: "127.0.0.2"
+              - name: HEALTH_TARGET_ADDRESS
+                value: 1.1.1.1:443
               - name: WIREGUARD_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
