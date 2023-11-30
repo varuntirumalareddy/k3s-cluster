@@ -47,7 +47,7 @@ spec:
           main:
             image:
               repository: ghcr.io/cross-seed/cross-seed
-              tag: 5.8.3@sha256:73b708b00075842a74380c52f403a8f70b5b94bc3eee2675aaf704b0b4f16561
+              tag: 5.8.4@sha256:92e263eefda4f733b10f82fe2f2011c49fff44d97587d9cf41dca38bec3ca8f5
               pullPolicy: IfNotPresent
             env:
               TZ: America/New_York
