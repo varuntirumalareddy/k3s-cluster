@@ -30,3 +30,4 @@ resources:
   - ./external-secrets.yaml
   - ./authentik.yaml
   - ./angelnu.yaml
+  - ./actions-runner-controller.yaml
