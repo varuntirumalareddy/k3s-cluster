@@ -40,10 +40,10 @@ spec:
           secret.reloader.stakater.com/reload: autobrr-secret
         pod:
           securityContext:
+            runAsUser: 568
+            runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups:
-              - 65542 # gladius:external-services
 
         initContainers:
           01-init-db:
@@ -64,15 +64,31 @@ spec:
               AUTOBRR__PORT: &port 80
               AUTOBRR__LOGLEVEL: DEBUG
             envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthz/liveness
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 50m
+                cpu: 10m
                 memory: 128Mi
               limits:
                 memory: 256Mi
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
 
           gluetun:
             image:
