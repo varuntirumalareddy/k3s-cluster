@@ -40,10 +40,11 @@ spec:
           secret.reloader.stakater.com/reload: autobrr-secret
         pod:
           securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
             fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups:
-              - 65542 # gladius:external-services
+            fsGroupChangePolicy: OnRootMismatch
         initContainers:
           01-init-db:
             image:
@@ -69,6 +70,10 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
           gluetun:
             image:
