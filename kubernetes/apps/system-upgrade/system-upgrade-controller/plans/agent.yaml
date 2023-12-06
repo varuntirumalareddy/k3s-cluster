@@ -6,8 +6,7 @@ metadata:
   name: agent
   namespace: system-upgrade
 spec:
-  # renovate: datasource=github-releases depName=k3s-io/k3s
-  version: "v1.28.4+k3s1"
+  channel: https://update.k3s.io/v1-release/channels/stable
   serviceAccountName: system-upgrade
   concurrency: 1
   nodeSelector:
@@ -15,9 +14,7 @@ spec:
       - {key: node-role.kubernetes.io/control-plane, operator: DoesNotExist}
   prepare:
     image: rancher/k3s-upgrade
-#    args: ["prepare", "server"]
-    args: ["prepare"]
+    args: ["prepare", "server"]
   upgrade:
     image: rancher/k3s-upgrade
-  version: "v1.28.4+k3s1-amd64"
 
