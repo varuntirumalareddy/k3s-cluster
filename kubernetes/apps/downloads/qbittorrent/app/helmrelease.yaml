@@ -79,6 +79,7 @@ spec:
               runAsGroup: 568
 
           gluetun:
+            dependsOn: main
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest@sha256:bb0faf2e14eaf935af45c4af101d450624b21360d385fed822a3d84a3ee8d24b
@@ -143,11 +144,13 @@ spec:
                     key: VPN_PORT_FORWARDING_PROVIDER
 
           dnsdist:
+            dependsOn: main
             image:
               repository: docker.io/powerdns/dnsdist-18
               tag: 1.8.2@sha256:06584eb44627c46b3718ee754c36a81acf66fdf423b162cae9ecfa69bb362c9e
 
           port-forward:
+            dependsOn: main
             image:
               repository: docker.io/snoringdragon/gluetun-qbittorrent-port-manager
               tag: 1.3@sha256:679b7a92c494f93b78ad37ef24f3a261e73d0a1a52505ad4f1e39580eedfa14f
@@ -160,6 +163,7 @@ spec:
                 value: "/tmp/gluetun/forwarded_port"
 
     service:
+      type: ClusterIP
       main:
         ports:
           http:
