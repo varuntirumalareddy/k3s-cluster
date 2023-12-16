@@ -59,10 +59,12 @@ spec:
             env:
               TZ: America/New_York
               PUSHOVER_DEBUG: "false"
+              COMPlus_EnableDiagnostics: "0"
+              SONARR__AUTHENTICATION_METHOD: External
+              SONARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
               SONARR__INSTANCE_NAME: Sonarr
               SONARR__PORT: &port 80
               SONARR__LOG_LEVEL: info
-              SONARR__AUTHENTICATION_METHOD: External
               SONARR__THEME: dark
             envFrom: *envFrom
             resources:
