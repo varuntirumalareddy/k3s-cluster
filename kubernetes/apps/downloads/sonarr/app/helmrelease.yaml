@@ -38,10 +38,11 @@ spec:
           secret.reloader.stakater.com/reload: sonarr-secret
         pod:
           securityContext:
+            runAsUser: 568
+            runAsGroup: 568
             fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups:
-              - 65542 # gladius:external-services
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [10000]
         initContainers:
           01-init-db:
             image:
