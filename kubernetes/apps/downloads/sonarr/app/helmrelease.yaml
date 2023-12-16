@@ -79,10 +79,6 @@ spec:
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest@sha256:bb0faf2e14eaf935af45c4af101d450624b21360d385fed822a3d84a3ee8d24b
-            securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
             networkPolicy:
               enabled: false
             env:
@@ -133,6 +129,10 @@ spec:
                   secretKeyRef:
                     name: sonarr-secret
                     key: VPN_ENDPOINT_IP
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
 
           dnsdist:
             dependsOn: gluetun
@@ -142,7 +142,6 @@ spec:
 
     service:
       main:
-        type: ClusterIP
         ports:
           http:
             port: *port
