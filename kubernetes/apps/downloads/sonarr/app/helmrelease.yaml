@@ -76,7 +76,6 @@ spec:
                 memory: 768M
 
           gluetun:
-            dependsOn: main
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest@sha256:bb0faf2e14eaf935af45c4af101d450624b21360d385fed822a3d84a3ee8d24b
