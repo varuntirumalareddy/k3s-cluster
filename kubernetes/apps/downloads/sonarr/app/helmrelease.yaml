@@ -38,8 +38,6 @@ spec:
           secret.reloader.stakater.com/reload: sonarr-secret
         pod:
           securityContext:
-            runAsUser: 568
-            runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [10000]
@@ -68,6 +66,9 @@ spec:
               SONARR__LOG_LEVEL: info
               SONARR__THEME: dark
             envFrom: *envFrom
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
             resources:
               requests:
                 cpu: 20m
@@ -81,7 +82,9 @@ spec:
               repository: docker.io/qmcgaw/gluetun
               tag: latest@sha256:bb0faf2e14eaf935af45c4af101d450624b21360d385fed822a3d84a3ee8d24b
             securityContext:
-              privileged: true
+              capabilities:
+                add:
+                  - NET_ADMIN
             networkPolicy:
               enabled: false
             env:
