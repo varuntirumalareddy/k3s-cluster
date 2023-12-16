@@ -65,6 +65,9 @@ spec:
               SONARR__LOG_LEVEL: info
               SONARR__THEME: dark
             envFrom: *envFrom
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
             resources:
               requests:
                 cpu: 20m
@@ -127,7 +130,9 @@ spec:
                     name: sonarr-secret
                     key: VPN_ENDPOINT_IP
             securityContext:
-              privileged: true
+              capabilities:
+                add:
+                  - NET_ADMIN
 
           dnsdist:
             dependsOn: gluetun
