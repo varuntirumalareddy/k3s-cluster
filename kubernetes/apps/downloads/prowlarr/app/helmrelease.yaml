@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.4.0
+      version: 2.3.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -37,8 +37,6 @@ spec:
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups:
-              - 65542 # gladius:external-services
         initContainers:
           01-init-db:
             image:
