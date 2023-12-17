@@ -132,7 +132,6 @@ spec:
 
     service:
       main:
-        type: ClusterIP
         ports:
           http:
             port: *port
