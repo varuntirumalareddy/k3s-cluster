@@ -67,7 +67,6 @@ spec:
                 memory: 256Mi
 
           gluetun:
-            dependsOn: main
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: latest@sha256:bb0faf2e14eaf935af45c4af101d450624b21360d385fed822a3d84a3ee8d24b
@@ -125,7 +124,6 @@ spec:
                     key: VPN_ENDPOINT_IP
 
           dnsdist:
-            dependsOn: gluetun
             image:
               repository: docker.io/powerdns/dnsdist-18
               tag: 1.8.3@sha256:5f2e92f6363db2bd5bd40319ac2fb10e3a583f6ff5fb5d96a948d9c8b93299b3
