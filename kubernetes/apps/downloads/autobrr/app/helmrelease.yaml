@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.4.0
+      version: 2.3.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -141,14 +141,12 @@ spec:
                     key: VPN_ENDPOINT_IP
 
           dnsdist:
-            dependsOn: gluetun
             image:
               repository: docker.io/powerdns/dnsdist-18
               tag: 1.8.3@sha256:5f2e92f6363db2bd5bd40319ac2fb10e3a583f6ff5fb5d96a948d9c8b93299b3
 
     service:
       main:
-        type: ClusterIP
         ports:
           http:
             port: *port
