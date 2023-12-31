@@ -11,6 +11,4 @@ spec:
     name: home-kubernetes
   interval: 10m
   prune: true
-  dependsOn:
-    - name: cluster-apps-snapshot-controller
   wait: true

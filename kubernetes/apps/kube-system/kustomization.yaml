@@ -11,5 +11,4 @@ resources:
   - ./descheduler/ks.yaml
   - ./democratic-csi/ks.yaml
   - ./external-secrets/ks.yaml
-#  - ./nvidia-gpu-operator/ks.yaml
 
