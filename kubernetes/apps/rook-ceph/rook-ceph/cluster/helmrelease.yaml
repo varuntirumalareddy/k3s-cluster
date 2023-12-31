@@ -65,10 +65,51 @@ spec:
     cephClusterSpec:
       network:
         provider: host
-        connections:
-          compression:
-            enabled: true
-          requireMsgr2: true
+
+      resources:
+        mgr:
+          requests:
+            cpu: "150m"
+            memory: "512Mi"
+          limits:
+            memory: "2Gi"
+        mon:
+          requests:
+            cpu: "50m"
+            memory: "512Mi"
+          limits:
+            memory: "1Gi"
+        osd:
+          requests:
+            cpu: "500m"
+            memory: "2Gi"
+          limits:
+            memory: "6Gi"
+        mgr-sidecar:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            memory: "256Mi"
+        crashcollector:
+          requests:
+            cpu: "15m"
+            memory: "64Mi"
+          limits:
+            memory: "64Mi"
+        logcollector:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            memory: "1Gi"
+        cleanup:
+          requests:
+            cpu: "250m"
+            memory: "100Mi"
+          limits:
+            memory: "1Gi"
+
       crashCollector:
         disable: false
       dashboard:
@@ -80,6 +121,7 @@ spec:
         useAllDevices: true
         config:
           osdsPerDevice: "1"
+
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -102,6 +144,13 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
+
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-blockpool
+      isDefault: false
+      deletionPolicy: Delete
+
     cephFileSystems:
       - name: ceph-filesystem
         spec:
@@ -118,10 +167,10 @@ spec:
             activeStandby: true
             resources:
               requests:
-                cpu: 1000m
-                memory: 4Gi
+                cpu: "100m"
+                memory: "1Gi"
               limits:
-                memory: 4Gi
+                memory: "4Gi"
         storageClass:
           enabled: true
           isDefault: false
@@ -137,6 +186,13 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
+
+    cephFileSystemVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-filesystem
+      isDefault: false
+      deletionPolicy: Delete
+
     cephObjectStores:
       - name: ceph-objectstore
         spec:
@@ -154,8 +210,8 @@ spec:
             port: 80
             resources:
               requests:
-                cpu: 1000m
-                memory: 1Gi
+                cpu: 100m
+                memory: 256m
               limits:
                 memory: 2Gi
             instances: 2
